@@ -18,6 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Verify formal HR service
+        run: |
+          status=$(curl --retry 3 --retry-delay 3 --silent --output /tmp/hr-response.json --write-out "%{http_code}" https://esg-api-six.vercel.app/api/hr/session)
+          test "$status" = "401"
+          grep -q '"error"' /tmp/hr-response.json
       - uses: actions/configure-pages@v5
         with:
           enablement: true
