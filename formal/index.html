@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b6b57">
+  <title>中国人力资源职能系统 V3.0</title>
+  <style>
+    :root{
+      --ink:#18342e;--muted:#667b75;--paper:#f6f3ea;--card:#fffdf8;--line:#d9e2dc;
+      --green:#0b6b57;--green2:#159274;--mint:#dcefe7;--amber:#e49b2f;--red:#c9504b;
+      --blue:#3478b8;--violet:#6d5bb6;--shadow:0 14px 40px rgba(24,52,46,.09);
+      --r:18px;--font:"Microsoft YaHei","PingFang SC","Noto Sans SC",system-ui,sans-serif
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font)}
+    button,input,select{font:inherit}.app{min-height:100vh}.topbar{position:sticky;top:0;z-index:20;background:rgba(246,243,234,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(24,52,46,.1)}
+    .topin{max-width:1440px;margin:auto;height:72px;padding:0 24px;display:flex;align-items:center;gap:20px}.brand{display:flex;align-items:center;gap:12px;min-width:275px}
+    .mark{width:42px;height:42px;border-radius:13px;background:var(--green);color:white;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 22px rgba(11,107,87,.25)}
+    .brand b{display:block;font-size:15px}.brand small{color:var(--muted)}.nav{display:flex;gap:5px;overflow:auto;scrollbar-width:none}.nav button{border:0;background:transparent;color:var(--muted);padding:10px 13px;border-radius:12px;white-space:nowrap;cursor:pointer;font-weight:700}
+    .nav button:hover,.nav button.active{background:var(--mint);color:var(--green)}.save{margin-left:auto;color:var(--green);font-size:12px;font-weight:800;white-space:nowrap}
+    main{max-width:1440px;margin:auto;padding:28px 24px 70px}.page{display:none}.page.active{display:block;animation:rise .25s ease}@keyframes rise{from{opacity:0;transform:translateY(6px)}}
+    .eyebrow{color:var(--green);font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:18px;margin-bottom:22px}
+    .hero-main{border-radius:28px;padding:34px;background:linear-gradient(130deg,#0a604f,#0d8067);color:white;position:relative;overflow:hidden;min-height:255px;box-shadow:var(--shadow)}
+    .hero-main:after{content:"";position:absolute;width:320px;height:320px;border:54px solid rgba(255,255,255,.07);border-radius:50%;right:-100px;top:-110px}
+    .hero h1{font-size:clamp(28px,4vw,52px);line-height:1.05;margin:12px 0 14px;max-width:770px}.hero p{color:rgba(255,255,255,.8);max-width:690px;line-height:1.7}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.btn{border:0;border-radius:12px;padding:11px 17px;font-weight:800;cursor:pointer}.btn.primary{background:var(--green);color:white}.hero .btn.primary{background:white;color:var(--green)}.btn.soft{background:var(--mint);color:var(--green)}.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}.btn.danger{background:#fae8e7;color:var(--red)}
+    .hero-side{display:grid;grid-template-columns:1fr 1fr;gap:12px}.metric{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 8px 25px rgba(24,52,46,.05)}
+    .metric .num{font-size:34px;font-weight:900;color:var(--green);margin:8px 0 2px}.metric span{font-size:12px;color:var(--muted)}.metric.wide{grid-column:span 2;background:#fff8e9}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:28px 0 14px}.section-head h2{margin:0;font-size:23px}.section-head p{margin:5px 0 0;color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:0 6px 24px rgba(24,52,46,.045)}.card.click{cursor:pointer;transition:.2s}.card.click:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:#b5cec4}
+    .icon{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:var(--mint)}.card h3{margin:13px 0 7px;font-size:17px}.card p{color:var(--muted);font-size:13px;line-height:1.6;margin:0}
+    .row{display:flex;align-items:center;gap:10px}.between{justify-content:space-between}.progress{height:8px;border-radius:99px;background:#e5ebe7;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#36b28f);border-radius:inherit}
+    .tag{display:inline-flex;align-items:center;border-radius:99px;padding:4px 8px;background:#edf2ef;color:var(--muted);font-size:11px;font-weight:800}.tag.D{background:#e2f0fb;color:#276899}.tag.S{background:#eee9fa;color:#604ba5}.tag.C{background:#fff0d6;color:#9a671b}.tag.O{background:#dff2e8;color:#08735a}.tag.L4{background:#f9e5e3;color:#a63c38}
+    .module-foot{margin-top:14px}.module-foot .row{font-size:12px;color:var(--muted);margin-bottom:7px}.callout{background:#fff8e9;border:1px solid #ecd9ac;border-radius:16px;padding:16px;color:#795718;line-height:1.6;font-size:13px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:15px 0}.control{background:white;border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--ink);min-width:140px}.search{flex:1;min-width:220px}
+    .path-layout{display:grid;grid-template-columns:300px 1fr;gap:18px}.sidepanel{position:sticky;top:94px;align-self:start}.step{padding:14px;border-left:3px solid #dbe4df;margin-left:8px;cursor:pointer}.step.done{border-color:var(--green)}.step.active{background:var(--mint);border-radius:0 12px 12px 0}.step b{display:block}.step small{color:var(--muted)}
+    .chapter{margin-bottom:14px}.chapter-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer}.atom-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
+    .atom{border:1px solid var(--line);border-radius:14px;padding:14px;background:#fff}.atom.done{border-color:#80bea9;background:#f1faf6}.atom h4{margin:8px 0;font-size:14px}.atom p{font-size:12px;line-height:1.6;color:var(--muted);min-height:38px}.atom button{padding:7px 10px;font-size:12px}
+    .quiz-shell{display:grid;grid-template-columns:1fr 300px;gap:18px}.quiz-card{min-height:480px}.qtop{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:14px}.qtext{font-size:21px;line-height:1.55;margin:25px 0}.options{display:grid;gap:10px}.option{border:1.5px solid var(--line);background:white;border-radius:14px;padding:14px 16px;text-align:left;cursor:pointer;color:var(--ink);display:flex;gap:11px;align-items:flex-start}.option:hover{border-color:#8ab8a8}.option.selected{border-color:var(--green);background:#eff9f5}.option.correct{border-color:var(--green2);background:#e5f7ef}.option.wrong{border-color:var(--red);background:#fbeceb}.letter{width:26px;height:26px;flex:0 0 26px;border-radius:8px;background:#edf1ef;display:grid;place-items:center;font-weight:900}
+    .explain{margin-top:16px;padding:16px;border-radius:14px;background:#f1f6f3;line-height:1.7;font-size:13px;display:none}.explain.show{display:block}.quiz-actions{display:flex;justify-content:space-between;gap:10px;margin-top:18px}
+    .palette{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:12px}.dot{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;background:white;font-size:11px;cursor:pointer}.dot.answered{background:var(--mint);color:var(--green)}.dot.current{outline:2px solid var(--green)}
+    .diagnosis{display:grid;grid-template-columns:1fr 1fr;gap:16px}.barrow{display:grid;grid-template-columns:150px 1fr 42px;gap:10px;align-items:center;margin:12px 0;font-size:13px}.bar{height:10px;background:#e7ece9;border-radius:99px;overflow:hidden}.bar i{height:100%;display:block;border-radius:99px;background:var(--green)}
+    .source-table{width:100%;border-collapse:collapse;font-size:13px}.source-table th,.source-table td{text-align:left;padding:13px;border-bottom:1px solid var(--line);vertical-align:top}.source-table th{color:var(--muted);font-size:11px;letter-spacing:.06em}
+    .empty{text-align:center;padding:55px 20px;color:var(--muted)}.empty .big{font-size:46px}.toast{position:fixed;right:24px;bottom:24px;background:var(--ink);color:white;padding:12px 16px;border-radius:12px;opacity:0;transform:translateY(12px);pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1;transform:none}
+    .modal{position:fixed;inset:0;background:rgba(16,34,30,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}.modal.show{display:flex}.modalbox{background:var(--card);width:min(680px,100%);max-height:86vh;overflow:auto;border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+    .result-score{font-size:64px;font-weight:900;color:var(--green)}.hide{display:none!important}.small{font-size:12px;color:var(--muted)}.warn{color:var(--amber)}.good{color:var(--green)}.bad{color:var(--red)}
+    @media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}.hero{grid-template-columns:1fr}.path-layout,.quiz-shell{grid-template-columns:1fr}.sidepanel{position:static}.diagnosis{grid-template-columns:1fr}}
+    @media(max-width:720px){.topin{height:auto;padding:12px 16px;flex-wrap:wrap}.brand{min-width:0;flex:1}.brand small,.save{display:none}.nav{order:3;width:100%}main{padding:20px 14px 55px}.hero-main{padding:25px;min-height:0}.hero h1{font-size:31px}.hero-side{grid-template-columns:1fr 1fr}.grid,.atom-list{grid-template-columns:1fr}.section-head{align-items:start}.toolbar .control{width:100%}.qtext{font-size:18px}.barrow{grid-template-columns:110px 1fr 36px}.source-table{display:block;overflow:auto}.metric .num{font-size:28px}}
+    /* V2.0 visual system retained for the V3.0 content expansion */
+    body{background:#f3f6fb;color:#10213d}.app{display:block}.topbar{display:none}
+    .sidebar{position:fixed;inset:0 auto 0 0;width:252px;background:#111b30;color:#eef4ff;padding:20px 14px 15px;display:flex;flex-direction:column;z-index:30}
+    .side-brand{display:flex;align-items:center;gap:11px;padding:4px 0 20px;border-bottom:1px solid rgba(255,255,255,.12)}
+    .side-brand .mark{background:linear-gradient(145deg,#5278ff,#7c61ef);box-shadow:none}.side-brand b{display:block;font-size:15px;line-height:1.45}.side-brand small{display:block;color:#9fc7ff;margin-top:3px}
+    .side-nav{display:grid;gap:5px;margin-top:16px}.side-nav button{border:0;background:transparent;color:#e6efff;padding:12px 14px;border-radius:11px;text-align:left;cursor:pointer;font-weight:700}
+    .side-nav button:hover,.side-nav button.active{background:#23314f;color:#fff}.side-nav .navicon{display:inline-block;width:25px;text-align:center;margin-right:2px}
+    .side-foot{margin-top:auto;background:#17243f;border-radius:12px;padding:12px;font-size:11px;line-height:1.65;color:#b9cbea}
+    main.workspace{max-width:none;margin-left:252px;padding:20px 28px 70px;min-height:100vh}.workspace-head{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}
+    .workspace-head h1{font-size:28px;margin:0 0 3px}.workspace-head p{margin:0;color:#65748c;font-size:13px}.status-pill{border:1px solid #dae2ee;background:#fff;border-radius:99px;padding:9px 13px;font-size:11px;color:#455978;white-space:nowrap}
+    .v2hero{background:linear-gradient(125deg,#1d2a50,#303d78);color:#fff;border-radius:24px;padding:30px 27px;display:grid;grid-template-columns:1fr 250px;align-items:center;min-height:216px;box-shadow:0 12px 35px rgba(23,39,73,.1)}
+    .v2hero h2{font-size:32px;margin:0 0 10px}.v2hero p{max-width:820px;line-height:1.75;color:#d9e8ff;margin:0}.hero-glyphs{font-size:62px;display:flex;justify-content:center;gap:32px;filter:drop-shadow(0 8px 16px rgba(0,0,0,.15))}
+    .v2hero .btn{background:#fff;color:#17305c}.dash-title{font-size:18px;margin:25px 0 10px;display:flex;align-items:center;justify-content:space-between}.dash-title small{font-size:11px;color:#65748c;font-weight:400}
+    .dash-metrics{grid-template-columns:repeat(4,1fr)}.dash-metric{display:flex;align-items:center;gap:14px;min-height:84px;padding:16px;border-radius:17px}.dash-metric .icon{background:#eff1ff}.dash-metric .num{font-size:26px;font-weight:900;color:#10213d}.dash-metric p{font-size:12px}
+    .mother-grid{grid-template-columns:repeat(4,1fr)}.mother-card{min-height:142px;padding:18px}.mother-card h3{margin:0;font-size:16px}.mother-card .icon{flex:0 0 44px;background:#f0efff}.mother-card p{margin:9px 0 17px;min-height:34px}.mother-card .module-foot{margin-top:0}
+    .recommend-grid{grid-template-columns:repeat(3,1fr)}.recommend-card{min-height:150px}
+    .setup-grid{grid-template-columns:repeat(3,1fr)}
+    .learn-dashboard{grid-template-columns:repeat(4,1fr);margin-bottom:18px}.learn-metric{display:flex;align-items:center;gap:12px;min-height:88px}.learn-metric .num{font-size:25px;font-weight:900}
+    .chapter-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.chapter-card{padding:17px}.chapter-card h3{margin:10px 0 5px}.chapter-card .row.small{margin-top:10px}
+    .chapter-ring{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#526ad9 var(--p),#e8edf5 0);position:relative;font-weight:900;font-size:12px}
+    .chapter-ring:before{content:"";position:absolute;inset:5px;border-radius:50%;background:#fff}.chapter-ring span{position:relative}
+    .lesson-wrap{max-width:980px;margin:0 auto}.lesson-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.lesson-steps{display:flex;gap:6px;flex:1;max-width:430px;margin:0 18px}.lesson-steps i{height:7px;flex:1;border-radius:20px;background:#e4e9f2}.lesson-steps i.on{background:#526ad9}
+    .memory-card{text-align:center;padding:34px;min-height:430px;display:flex;flex-direction:column;justify-content:center}.memory-icon{width:74px;height:74px;border-radius:23px;background:#eef0ff;display:grid;place-items:center;font-size:36px;margin:0 auto 18px}.memory-card h2{font-size:27px;margin:0 0 10px}.memory-question{font-size:17px;color:#62708a;margin:10px auto 22px;max-width:620px;line-height:1.7}
+    .rule-box{background:#f3f6ff;border:1px solid #dce3fb;border-radius:17px;padding:20px;margin:17px auto;max-width:720px;text-align:left}.rule-box b{display:block;color:#304b91;margin-bottom:8px}.rule-box p{font-size:18px;color:#172846;margin:0;line-height:1.7}
+    .learning-visual{display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr;align-items:center;gap:7px;margin:18px auto;max-width:780px}.visual-node{background:#fff;border:1px solid #dfe5ef;border-radius:14px;padding:14px 10px;min-height:76px;display:flex;align-items:center;justify-content:center;line-height:1.45}.visual-arrow{font-size:20px;color:#8290aa}
+    .lesson-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px}.mastery-status{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:6px 10px;background:#eef2f8;color:#53657d;font-size:12px;font-weight:800}.mastery-status.stable{background:#dff4e9;color:#08735a}.mastery-status.due{background:#fff0d6;color:#9a671b}
+    .lesson-result{text-align:center;padding:30px}.result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:18px 0;text-align:left}.result-item{border:1px solid var(--line);border-radius:13px;padding:13px;background:#fff}
+    .deep-learning{margin-top:16px;text-align:left}.deep-learning summary{cursor:pointer;font-weight:850;color:#244b72}.deep-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}.deep-step,.case-box{border:1px solid var(--line);border-radius:12px;padding:12px;background:#f8fafc;line-height:1.55}.case-box{margin-top:8px}.case-box.warn{background:#fff7e8;border-color:#f2d39b}.source-link{display:inline-flex;margin-top:10px;color:#236653;font-weight:800;text-decoration:none}
+    .resume-exam{display:flex;align-items:center;gap:16px;margin-bottom:16px;border-color:#b9c6f2;background:linear-gradient(100deg,#f4f6ff,#fff)}.resume-exam .icon{background:#e4e9ff}.resume-exam .resume-copy{flex:1}.resume-exam h3{margin:0 0 3px}.shortcut-hint{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);line-height:1.7}.source-chip{display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:#304b91;font-size:13px;font-weight:800;text-decoration:none}
+    .feedback-layout{display:grid;grid-template-columns:minmax(420px,.9fr) 1.1fr;gap:18px}.feedback-form textarea{width:100%;min-height:180px;resize:vertical;font:inherit;line-height:1.6}.feedback-form input,.feedback-form select,.feedback-form textarea{border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin:6px 0 14px;background:#fff;color:var(--ink)}.feedback-form input,.feedback-form select{width:100%}.feedback-item{border-left:5px solid #b8c4d8}.feedback-item.reviewing{border-left-color:var(--amber)}.feedback-item.resolved{border-left-color:var(--green)}.feedback-meta{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}.feedback-message{white-space:pre-wrap;color:#394b62!important}.feedback-empty{text-align:center;padding:38px 20px}
+    .past-hero{background:linear-gradient(125deg,#3b2b08,#8b5f07);color:#fff;border-radius:24px;padding:28px;display:grid;grid-template-columns:1fr 250px;align-items:center;gap:18px;box-shadow:var(--shadow)}.past-hero h1{margin:6px 0 10px;font-size:32px}.past-hero p{color:#fff2c8;line-height:1.7;margin:0}.past-hero .icon{width:92px;height:92px;border-radius:28px;margin:auto;background:rgba(255,255,255,.15);font-size:47px}.paper-grid{grid-template-columns:repeat(4,1fr)}.paper-card{position:relative;overflow:hidden;min-height:220px}.paper-card:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;top:-35px;background:#fff2c9}.paper-year{font-size:30px;font-weight:900;color:#7b560c}.coach-layout{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px}.coach-box{background:#fff8df;border:1px solid #efd28a;border-radius:16px;padding:16px;line-height:1.7}.coach-box h3{margin:0 0 8px;color:#805b0d}.coach-step{display:flex;gap:10px;margin:10px 0}.coach-step i{width:25px;height:25px;flex:0 0 25px;border-radius:8px;background:#f1c862;color:#553900;display:grid;place-items:center;font-style:normal;font-weight:900}.concept-map{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.concept-map div{border:1px solid #eadcae;background:#fffdf5;border-radius:12px;padding:11px;text-align:center;font-size:12px;font-weight:800}.past-report{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}.past-report .card{text-align:center}.past-report b{display:block;font-size:25px;color:#805b0d}
+    .onboarding{max-width:1000px;margin:20px auto}.onboarding .goal-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.goal-option{display:block;border:2px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;background:#fff}.goal-option:has(input:checked){border-color:#526ad9;background:#f1f3ff}.goal-option input{margin-right:8px}.goal-banner{display:flex;align-items:center;gap:16px;margin-bottom:16px;background:linear-gradient(100deg,#eef2ff,#fff)}.goal-banner .goal-copy{flex:1}.growth{font-size:27px;font-weight:900;color:#526ad9}.reply-box{margin-top:12px;padding:12px;border-radius:12px;background:#edf8f3;border:1px solid #bfe2d2;color:#245e4d}
+    .page>.section-head:first-child{margin-top:2px}.card{border-color:#e0e6ef;box-shadow:0 10px 26px rgba(24,43,77,.055)}.btn.primary{background:#233c73}.btn.soft{background:#ecf1ff;color:#243e78}.tag{background:#eef2f8;color:#53657d}
+    @media(max-width:1180px){.mother-grid,.paper-grid{grid-template-columns:repeat(2,1fr)}.dash-metrics,.learn-dashboard{grid-template-columns:repeat(2,1fr)}.coach-layout{grid-template-columns:1fr}}
+    @media(max-width:820px){.sidebar{position:static;width:auto;padding:12px}.side-brand{padding-bottom:10px}.side-nav{display:flex;overflow:auto}.side-nav button{white-space:nowrap}.side-foot{display:none}main.workspace{margin-left:0;padding:18px 14px 55px}.v2hero{grid-template-columns:1fr}.hero-glyphs{display:none}.recommend-grid,.setup-grid{grid-template-columns:1fr}}
+    @media(max-width:700px){.chapter-grid{grid-template-columns:1fr}.learning-visual,.deep-grid{grid-template-columns:1fr}.visual-arrow{transform:rotate(90deg)}.lesson-steps{margin:0 8px}.memory-card{padding:24px 16px}.result-grid{grid-template-columns:1fr}}
+    @media(max-width:540px){.workspace-head{align-items:flex-start}.status-pill{display:none}.v2hero{padding:23px 20px}.v2hero h2{font-size:26px}.dash-metrics,.mother-grid,.learn-dashboard{grid-template-columns:1fr}}
+    #onlineGate{position:fixed;inset:0;z-index:100;min-height:100vh;display:grid;background:#f7f4e9;color:#171b2d}#onlineGate>.card{width:min(460px,calc(100% - 36px));margin:auto}#onlineGate label{display:block;font-size:13px;font-weight:800;color:#283047}#onlineGate input{width:100%;margin:7px 0 17px;padding:14px 15px;border:1px solid #d9deea;border-radius:11px;font:inherit;background:#fbfcfe;outline:none;transition:.2s}#onlineGate input:focus{border-color:#e0a51d;box-shadow:0 0 0 4px rgba(243,189,61,.18);background:#fff}.login-shell{min-height:100vh;display:grid;grid-template-columns:58% 42%;background:linear-gradient(133deg,#171b31 0%,#171b31 49.85%,#f7f4e9 50.05%,#f7f4e9 100%)}.login-story{display:flex;align-items:center;padding:8vh 6.4vw;color:#fff}.login-story-inner{width:min(650px,100%);transform:translateY(-1vh)}.login-mark{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(145deg,#ffd86b,#e3a41d);color:#202438;font-size:20px;font-weight:950;box-shadow:0 14px 34px rgba(0,0,0,.2)}.login-kicker{margin-top:28px;color:#f2c85d;font-size:12px;font-weight:900;letter-spacing:.23em}.login-story h1{margin:16px 0 18px;font-size:clamp(38px,4.3vw,68px);line-height:1.08;letter-spacing:-.04em}.login-story p{max-width:610px;margin:0;color:#d8dbea;font-size:17px;line-height:1.8}.login-points{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}.login-points span{border:1px solid rgba(255,216,107,.38);background:rgba(255,216,107,.06);color:#ffe291;border-radius:99px;padding:7px 13px;font-size:12px;font-weight:800}.login-panel{display:flex;align-items:center;justify-content:center;padding:40px 6vw 40px 0}.login-card{width:min(420px,100%);min-height:500px;background:rgba(255,255,255,.97);border:1px solid rgba(23,27,49,.08);border-radius:24px;padding:36px 31px;box-shadow:0 28px 70px rgba(31,38,55,.16)}.login-card-mark{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:38px;padding:0 11px;border-radius:11px;background:#fff0bd;color:#7b5510;font-size:12px;font-weight:950}.login-card h2{margin:20px 0 5px;font-size:27px;color:#171b2d}.login-card>p{margin:0 0 28px;color:#737b8f;font-size:14px}.login-card .btn.primary{width:100%;margin:4px 0 0;padding:14px;background:linear-gradient(100deg,#f5c54b,#e5aa24);color:#262a3b;border-radius:11px;box-shadow:0 9px 22px rgba(218,158,22,.2)}.login-card .btn.primary:hover{filter:brightness(.97);transform:translateY(-1px)}#loginError{min-height:21px;margin:0 0 7px;color:#b3463f;font-size:12px}.login-links{text-align:center;margin-top:24px}.login-links a{color:#737b8f;font-size:13px;font-weight:800;text-decoration:none;padding:9px 13px;border-radius:10px}.login-links a:hover{background:#fff4d3;color:#68470b}.admin-login .login-mark,.admin-login .login-card-mark{background:linear-gradient(145deg,#ffe6a1,#e9b43b)}#onlineBar{position:sticky;top:0;z-index:50;padding:10px 24px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}#onlineBar .btn{padding:7px 12px}#syncStatus{margin-right:auto;color:var(--muted)}[hidden]{display:none!important}
+    @media(max-width:900px){.login-shell{grid-template-columns:1fr;background:#f7f4e9}.login-story{min-height:350px;padding:54px 8vw;background:linear-gradient(145deg,#171b31,#252b4a);clip-path:polygon(0 0,100% 0,100% 86%,0 100%)}.login-story-inner{transform:none}.login-story h1{font-size:42px}.login-panel{padding:20px 18px 42px;margin-top:-35px;position:relative}.login-card{min-height:auto}.login-kicker{margin-top:20px}}
+    @media(min-width:821px){.sidebar{top:58px}}
+    @media(max-width:820px){body{overflow-x:hidden}#onlineBar{position:relative;padding:8px;font-size:14px}.side-nav button,.option,.lesson-actions .btn{min-height:44px}.lesson-actions{position:sticky;bottom:0;background:#fff;padding:12px 0;z-index:8}.small,.card p,.explain{font-size:14px}}
+    @media(max-width:420px){#syncStatus{width:100%;margin:0}.workspace-head h1{font-size:23px}.qtop{align-items:flex-start;gap:10px}.quiz-actions{align-items:stretch}.quiz-actions>.row{flex-wrap:wrap;justify-content:flex-end}.lesson-actions{flex-wrap:wrap}.lesson-actions .small{width:100%;text-align:center;order:-1}}
+  </style>
+</head>
+<body>
+<div id="onlineBar" hidden></div><div id="onlineGate"></div><div class="app online-content" hidden>
+  <aside class="sidebar">
+    <div class="side-brand"><div class="mark">HR</div><div><b>中国人力资源职能系统</b><small>6,000题完整版</small></div></div>
+    <nav class="side-nav" id="nav">
+      <button class="active" data-page="home"><span class="navicon">🏠</span>学习总览</button>
+      <button data-page="certs"><span class="navicon">🎓</span>证照地图</button>
+      <button data-page="sources"><span class="navicon">📚</span>官方资料池</button>
+      <button data-page="knowledge"><span class="navicon">🧩</span>知识库</button>
+      <button data-page="path"><span class="navicon">🧠</span>学习模式</button>
+      <button data-page="practice"><span class="navicon">🎯</span>刷题模式</button>
+      <button data-page="past"><span class="navicon">📜</span>历届考题</button>
+      <button data-page="exam"><span class="navicon">⏱️</span>模拟考试</button>
+      <button data-page="diagnosis"><span class="navicon">📈</span>能力分析</button>
+      <button data-page="wrong"><span class="navicon">🧯</span>错题本</button>
+      <button data-page="feedback"><span class="navicon">💬</span>意见反馈</button>
+    </nav>
+  </aside>
+  <main class="workspace">
+    <section class="page active" id="home"></section>
+    <section class="page" id="certs"></section>
+    <section class="page" id="path"></section>
+    <section class="page" id="knowledge"></section>
+    <section class="page" id="practice"></section>
+    <section class="page" id="past"></section>
+    <section class="page" id="exam"></section>
+    <section class="page" id="wrong"></section>
+    <section class="page" id="diagnosis"></section>
+    <section class="page" id="sources"></section>
+    <section class="page" id="feedback"></section>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div><div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="结果与确认"><div class="modalbox" id="modalbox"></div></div>
+<script>
+(function(){
+  "use strict";
+  var SKEY="china_hr_v3_progress",overrides={};
+  var modules=[
+    {id:"STR",icon:"◈",name:"战略与组织规划",cert:"企业人力资源管理师／中级经济师",color:"#0b6b57",chapters:[
+      ["战略人力资源",["战略匹配|人力资源战略应与组织战略、发展阶段和外部环境相匹配","人力资源盘点|盘点应覆盖数量、质量、结构与效能","供需预测|先分析业务需求，再预测内部与外部供给","差距分析|供需缺口应转化为招聘、培养、保留或优化行动","规划闭环|规划需要目标、行动、预算、责任人与复盘机制","环境分析|外部环境关注政策、经济、技术与劳动力市场","组织能力|能力建设以支撑战略所需的关键行为为导向","人力资本|人力资本投资需要同时评估成本、收益与风险"]],
+      ["组织设计",["组织结构|结构设计应服务战略、流程与客户价值","管理幅度|幅度受任务复杂度、标准化程度与管理能力影响","权责体系|岗位责任、权限与协同接口应保持一致","岗位体系|岗位分析是招聘、评价、薪酬和培训的共同基础","流程优化|先识别价值流和瓶颈，再调整职责与节点","集权分权|权力配置应兼顾效率、风险和响应速度","组织诊断|从战略、结构、流程、人才与文化多维分析","变革管理|变革需明确愿景、利益相关方、沟通与固化机制"]],
+      ["工作分析",["工作信息|通过访谈、观察、问卷和资料分析采集工作信息","岗位说明书|通常包含岗位目的、职责、权限、任职资格与关系","任职资格|应区分最低门槛、胜任要求与发展要求","关键任务|按照重要性、频率与影响识别关键工作任务","工作日志|适合记录周期性活动与实际时间分配","岗位评价|评价岗位相对价值而非任职者个人表现","动态更新|组织或流程变化后应及时维护岗位资料","合规边界|工作分析不得设置与岗位无关的歧视性条件"]],
+      ["人力数据",["指标口径|同一指标需统一定义、周期、范围与数据源","人员结构|结构分析关注层级、序列、年龄、司龄与关键群体","流动分析|离职率需结合主动性、关键岗位与离职原因解读","人效指标|人均产出应结合行业、业务阶段和投入结构","数据质量|完整性、准确性、一致性和及时性缺一不可","隐私保护|个人信息处理遵循合法、正当、必要和最小范围","仪表盘|指标应服务决策，避免只堆叠可获得的数据","预测应用|预测模型输出应结合业务判断并持续校准"]]
+    ]},
+    {id:"REC",icon:"◎",name:"招聘配置与甄选",cert:"企业人力资源管理师／人才测评师",color:"#3478b8",chapters:[
+      ["招聘规划",["需求确认|招聘需求应基于编制、工作量和能力缺口验证","招聘标准|标准应源自岗位职责和任职资格","渠道组合|依据人才稀缺度、时效与成本配置招聘渠道","招聘预算|覆盖渠道、测评、差旅、工时与机会成本","招聘周期|从需求批准到候选人到岗分阶段管理","雇主品牌|真实呈现员工价值主张，避免承诺失真","内外招聘|内部流动重激励与保留，外部招聘重补充与更新","合规发布|招聘信息不得含民族、性别等就业歧视内容"]],
+      ["甄选技术",["结构化面试|所有候选人使用统一维度、问题与评分标准","行为面试|通过过去具体行为预测相近情境下的表现","情境面试|要求候选人说明假设场景中的处理方案","评分锚定|评分等级需配套可观察的行为描述","面试官训练|训练提问、追问、记录、评分与偏差控制","多元证据|重要录用决策应综合面试、测验与背景信息","信度效度|信度关注稳定性，效度关注测到目标构念的程度","录用决策|基于预设标准汇总证据，不凭单一印象"]],
+      ["背景与录用",["背景调查|应事先告知并取得必要授权，范围与岗位相关","信息核验|重点核实身份、经历、资格和重大诚信风险","录用通知|明确岗位、地点、报酬、到岗日及生效条件","入职资料|只收集用工和管理所必需的信息","健康检查|不得以传染病病原携带者为由拒绝法律禁止限制的就业","试用目标|试用期考核标准应在入职时明确并可证明","候选体验|及时、尊重、透明的沟通有助于雇主品牌","数据留存|候选人资料设置访问权限、保存期限与删除机制"]],
+      ["配置与入职",["人岗匹配|同时评估能力、动机、价值观与岗位情境","入职计划|覆盖手续、工具、关系、任务和文化融入","导师机制|导师负责业务引导与反馈，不替代直属经理管理","早期反馈|在关键节点及时校准期望和表现","岗位轮换|需有学习目标、周期、评估与承接安排","内部竞聘|规则、资格、评审和结果沟通应公开一致","继任衔接|关键岗位应建立候选梯队与风险预案","配置复盘|跟踪到岗率、胜任速度、留存和招聘质量"]]
+    ]},
+    {id:"TRN",icon:"△",name:"培训与人才发展",cert:"企业培训师／职业指导师",color:"#6d5bb6",chapters:[
+      ["需求分析",["组织分析|从战略目标和绩效差距确定培训优先级","任务分析|拆解关键任务所需知识、技能与行为","人员分析|识别谁需要培训以及具体差距","非培训因素|流程、资源或激励问题不应简单归因于培训","需求证据|综合绩效数据、访谈、观察与测评结果","优先排序|兼顾业务影响、紧迫度、覆盖面和可行性","学习目标|采用可观察、可衡量的行为表述","基线测量|培训前记录能力或绩效基线便于评估"]],
+      ["课程设计",["成人学习|强调经验连接、问题导向、参与和及时应用","教学结构|从目标、内容、活动到评估保持一致","内容分层|区分必须掌握、建议掌握和扩展学习","练习设计|练习情境应尽量接近真实工作任务","认知负荷|控制单次信息量并通过结构化降低负担","混合学习|按学习目标组合面授、在线、实践与辅导","包容设计|兼顾不同基础、设备和可访问性需求","版权合规|教材、图片和案例使用应具备合法授权"]],
+      ["实施与转化",["培训运营|明确讲师、场地、材料、名单与应急预案","学习氛围|安全、尊重和允许试错有助于参与","在岗实践|通过任务、项目和刻意练习促进迁移","经理支持|直属经理需提供目标、机会、反馈和强化","行动计划|学员明确应用事项、期限和衡量方式","社群学习|同伴交流可促进经验共享和持续实践","转化障碍|识别缺少机会、资源、反馈或奖励等障碍","训后跟踪|在30、60、90天观察行为变化和业务影响"]],
+      ["培训评估",["反应评估|了解体验与相关性，但不能单独证明效果","学习评估|比较知识、技能或态度在训前后的变化","行为评估|观察学员回到岗位后的行为应用","结果评估|关注质量、效率、客户或财务等业务指标","评估设计|尽量使用对照、趋势或多来源证据","ROI分析|以净收益与培训成本比较，并说明假设","项目复盘|根据数据决定保留、优化、扩展或停止","人才发展|把课程与岗位能力、职业路径和人才梯队连接"]]
+    ]},
+    {id:"PER",icon:"◇",name:"绩效与激励管理",cert:"企业人力资源管理师／中级经济师",color:"#c57b24",chapters:[
+      ["目标管理",["战略分解|组织目标逐层转化为部门、团队和岗位目标","目标质量|目标应具体、可衡量、可实现、相关且有时限","结果行为|绩效目标兼顾结果指标与关键行为","权重设置|权重体现战略优先级和岗位影响","目标共识|经理与员工澄清口径、资源、边界和风险","动态调整|重大业务变化时按规则调整目标并留痕","目标数量|聚焦少数关键目标，避免指标过度分散","协同目标|跨部门目标需明确共同结果和责任接口"]],
+      ["过程管理",["持续反馈|及时反馈具体行为、影响和改进建议","绩效辅导|通过提问、资源支持和练习促进改善","数据记录|记录关键事件与证据，避免近因偏差","进度检查|定期比较目标、实际、差距与行动","绩效障碍|区分能力、意愿、资源、流程和目标问题","认可强化|对符合期望的行为及时给予具体认可","改进计划|明确差距、支持、里程碑、期限和后果","经理责任|绩效管理是持续管理职责，不只是年终评分"]],
+      ["评价方法",["关键绩效指标|KPI聚焦对关键结果有驱动作用的指标","目标与关键结果|OKR强调挑战目标、关键结果和周期复盘","行为锚定量表|以具体行为描述不同绩效等级","强制分布|可能造成机械排序，不宜脱离适用情境使用","多源反馈|适合发展性反馈，需控制匿名、偏差与解释","校准会议|统一尺度并检视证据与群体偏差","评价偏差|常见偏差包括晕轮、趋中、宽严和近因效应","申诉机制|提供清晰时限、渠道、复核和结果反馈"]],
+      ["结果应用",["薪酬联动|绩效结果与薪酬关联需规则透明且可承受","发展联动|低分不只惩罚，应识别能力差距和发展行动","晋升决策|晋升综合持续绩效、潜力、价值观与岗位需要","人才盘点|绩效与潜力应分开评价后再综合判断","风险控制|不能仅凭末位排名当然解除劳动合同","绩效沟通|先讨论事实和差距，再共创行动","制度公平|程序公平和互动公平影响员工接受度","效果评估|检视绩效制度对战略、行为、体验和成本的影响"]]
+    ]},
+    {id:"PAY",icon:"¥",name:"薪酬、薪税与社保",cert:"薪税师／企业人力资源管理师",color:"#b14f4a",chapters:[
+      ["薪酬战略",["薪酬定位|依据人才战略、支付能力和市场水平确定定位","全面薪酬|包括固定、浮动、福利、发展和工作体验","内部公平|通过岗位价值和一致规则维护内部公平","外部竞争|通过可比市场数据判断薪酬竞争力","个人公平|同岗差异应有能力、绩效或经验等合理依据","薪酬结构|结构设计兼顾激励、保障、风险与管理成本","薪酬沟通|解释制度逻辑和个人结果，不泄露他人隐私","年度复盘|结合市场、绩效、预算和内部公平调整"]],
+      ["岗位与市场定价",["岗位评价|评价岗位相对价值，不评价任职者","要素计点|选定报酬要素、等级和点值后形成岗位分值","岗位等级|把价值接近的岗位归入同一等级","薪酬调查|明确市场、行业、地区、岗位和统计口径","百分位|百分位反映样本薪酬在市场分布中的位置","薪酬带宽|带宽支持同等级内按能力与贡献差异付薪","重叠度|适度重叠支持发展，过度重叠会削弱等级区分","市场校准|同名岗位必须先校准职责和任职要求"]],
+      ["工资与个税",["工资支付|工资应以货币形式按约定周期支付给劳动者","最低工资|正常劳动下工资不得低于当地最低工资标准","加班工资|依法区分工作日延时、休息日与法定休假日标准","工资台账|记录支付时间、金额、项目、扣除和领取信息","个税预扣|居民个人综合所得通常按累计预扣法预扣预缴","专项附加扣除|依有效规则和员工申报信息办理扣除","税前扣除|企业支出税务处理需满足真实性、相关性和凭证要求","薪税核验|法定基数、税率和地方口径需按期核验"]],
+      ["社会保险与福利",["法定参保|用人单位和劳动者依法参加社会保险并缴费","缴费基数|按国家与参保地现行口径确定并定期核验","五项保险|基本养老、医疗、工伤、失业和生育构成社会保险体系","工伤原则|工伤保险费原则上由用人单位缴纳","社保转移|跨地区就业按现行规则办理关系转移接续","福利分类|区分法定福利、普惠福利和个性化福利","福利价值|评估使用率、员工价值感、成本和合规性","信息保护|薪酬、个税和社保数据应严格权限和最小披露"]]
+    ]},
+    {id:"LAB",icon:"⚖",name:"劳动关系与用工合规",cert:"劳动关系协调员／师",color:"#167a89",chapters:[
+      ["劳动合同订立",["用工起点|用人单位自用工之日起与劳动者建立劳动关系","书面合同|建立劳动关系应依法订立书面劳动合同","一个月节点|已建立劳动关系未同时订立合同的，应自用工之日起一个月内订立","必备条款|合同应包含期限、工作内容地点、工时休假、报酬、社保等法定事项","合同文本|劳动合同文本由用人单位和劳动者各执一份","试用期次数|同一用人单位与同一劳动者只能约定一次试用期","试用期限|合同期限不同对应法定试用期上限","试用工资|不得低于约定工资的80%并不得低于当地最低工资"]],
+      ["履行变更解除",["全面履行|双方应按劳动合同约定全面履行义务","合同变更|变更劳动合同原则上应协商一致并采用书面形式","协商解除|用人单位提出并协商一致解除通常需依法支付经济补偿","过失解除|符合严重违纪等法定情形时可依法解除","非过失解除|需满足法定情形、程序及经济补偿要求","禁止解除|医疗期、孕产哺乳期等法定情形受到特别保护","解除证明|解除或终止时应出具证明并依法办理档案社保转移","经济补偿|一般按劳动者在本单位工作年限和法定月工资口径计算"]],
+      ["工时休假与规章",["标准工时|国家实行劳动者每日工作不超过八小时、平均每周不超过四十四小时制度","特殊工时|不定时和综合计算工时工作制需按规定审批或执行","加班限制|延长工作时间应符合法定程序和时长限制","休息日安排|休息日加班可优先安排补休，不能补休依法支付工资","法定节假日|法定休假日工作的不得以补休替代法定加班工资","年休假|连续工作满法定年限的职工依法享受带薪年休假","制度程序|涉及切身利益的规章制度需履行讨论与协商程序","公示告知|规章制度应以可证明方式向劳动者公示或告知"]],
+      ["争议与集体关系",["调解仲裁|劳动争议可依法协商、调解、仲裁和诉讼","仲裁时效|申请劳动争议仲裁一般时效为一年，法律另有规定除外","举证责任|由用人单位掌握管理的证据，应依法承担提供责任","集体协商|围绕劳动报酬、工时休假等事项依法平等协商","集体合同|依法订立后报送劳动行政部门并按规定生效","员工沟通|建立常态沟通、申诉和风险预警机制","争议预防|通过合法制度、完整记录和及时沟通降低争议","合规复盘|解除、调岗、降薪等高风险事项应逐案核验依据与程序"]]
+    ]},
+    {id:"QUO",icon:"▦",name:"定员定额与人效",cert:"劳动定员定额师",color:"#5c768f",chapters:[
+      ["定岗定编",["业务驱动|定岗定编应从战略、流程和工作量出发","职责边界|岗位设置避免职责重叠、空白与多头负责","编制类型|区分长期、项目、季节和替补等不同编制需求","标杆比较|外部标杆需校准业务模式、自动化和规模差异","关键岗位|依据业务连续性和风险识别关键岗位","编制审批|建立申请、验证、审批、占用和释放流程","弹性配置|采用共享、外包、灵活排班等方式需同步评估风险","定期复盘|组织、设备或工艺变化后重新检视编制"]],
+      ["劳动定额",["标准时间|在规定条件下完成合格产品或任务所需时间","时间研究|通过观察、评定与宽放确定标准时间","工作抽样|用随机观察估计各类活动时间占比","标准资料|积累重复要素时间数据以提升定额效率","宽放时间|考虑疲劳、个人需要和不可避免延迟","定额水平|应先进合理，兼顾效率、质量、安全与可持续性","异常处理|异常工况和正常工况应分开记录分析","员工参与|听取一线和技术人员意见有助于定额可执行"]],
+      ["工时与产能",["产能测算|综合设备、人员、节拍、良率和可用工时","标准工时|用于计划、成本、排产和效率分析，需版本管理","瓶颈识别|系统产出受关键约束环节限制","线平衡|按节拍重新分配任务以减少等待和拥堵","利用率|实际投入时间与可用时间比较需明确口径","效率率|标准工时产出与实际投入工时比较","良率影响|只看速度不看质量会高估有效产能","人机协同|自动化后需重新定义人的任务、技能与安全要求"]],
+      ["人效改善",["人效树|将人均产出拆解为收入、产量、质量和投入驱动","改善顺序|优先消除浪费和流程问题，再讨论简单减员","多技能|通过技能矩阵和轮岗提升排班弹性","排班设计|匹配需求波动并遵守工时休假规则","间接人员|依据服务对象、业务量和服务水平配置","改善验证|以基线、目标、周期和对照验证改善效果","风险平衡|人效提升不得牺牲安全、质量、合规与可持续性","收益共享|改善成果可通过认可、激励和发展增强参与"]]
+    ]},
+    {id:"ASM",icon:"✦",name:"人才测评与盘点",cert:"人才测评师",color:"#8b5b9d",chapters:[
+      ["测评基础",["测评目标|先明确选拔、发展、盘点或诊断目的","胜任模型|围绕关键任务和高绩效行为建立能力标准","信度|反映测量结果的一致性与稳定性","效度|反映测评结果对目标构念或绩效的解释程度","常模|用于解释个体分数在参照群体中的相对位置","标准分数|将原始分转换为可比较的尺度","公平性|检视不同群体的测量偏差和不利影响","知情边界|向参与者说明目的、用途、保密和反馈安排"]],
+      ["测评工具",["认知测验|评估推理、理解或问题解决等认知能力","人格测验|描述相对稳定倾向，不宜作为唯一淘汰依据","情境判断|通过工作情境选项评估判断与行为倾向","无领导小组|观察互动中的分析、影响、协作与组织行为","公文筐|模拟管理任务，评估分析、优先级和决策","角色扮演|在互动情境中观察沟通与处理能力","结构化面试|统一维度、问题、追问与评分锚点","工具组合|按测评目标配置多方法并控制重复与成本"]],
+      ["实施评分",["施测标准化|指导语、时限、环境与流程保持一致","评委培训|校准维度定义、观察记录和评分尺度","行为记录|记录可观察事实，区分事实与推断","独立评分|先独立评分再讨论，降低从众影响","证据整合|按预设权重整合多来源证据","异常识别|检查缺失、极端、作答模式和实施偏差","数据安全|限制访问、加密存储并按期限处理资料","质量分析|持续分析信度、效度、区分度与预测效果"]],
+      ["人才盘点",["绩效潜力|绩效反映当前贡献，潜力关注未来更复杂角色可能性","九宫格|是讨论框架而非自动结论，需统一定义和证据","关键人才|依据战略稀缺性、绩效、潜力和替代风险识别","继任计划|每个关键岗位建立准备度分层和发展行动","盘点校准|跨团队校准标准并挑战主观标签","发展会议|向人才提供可行动的优势、差距与机会反馈","人才风险|关注流失、断层、单点依赖和能力过时","闭环跟踪|跟踪发展任务、岗位历练、导师和继任准备度"]]
+    ]},
+    {id:"ECO",icon:"∑",name:"中级经济师·人力资源",cert:"经济专业技术资格",color:"#356a45",chapters:[
+      ["组织行为",["动机概念|动机包含方向、强度与持续性","需要层次|需要理论用于理解差异，不宜机械套用固定顺序","双因素理论|保健因素防止不满，激励因素促进满意","期望理论|努力取决于效价、工具性和期望的共同作用","公平理论|个体比较投入产出比并形成公平判断","目标设置|具体且有挑战并被接受的目标通常更能促进绩效","组织承诺|情感、继续与规范承诺的形成机制不同","组织文化|共享价值与假设通过制度、领导和社会化传递"]],
+      ["领导与团队",["领导风格|有效风格取决于任务、成员与情境","路径目标|领导通过澄清路径和排除障碍帮助成员达成目标","权变领导|匹配领导方式与情境有利程度","变革型领导|通过愿景、激励、个别关怀和智力激发影响成员","团队阶段|形成、震荡、规范、绩效与解散阶段任务不同","团队角色|多样互补角色有助于团队完成复杂任务","冲突管理|根据议题和关系选择合作、妥协、回避等策略","组织沟通|选择适当渠道并减少过滤、噪音与理解偏差"]],
+      ["劳动力市场",["劳动力需求|源于产品和服务需求，属于派生需求","边际产出|企业用工决策受劳动边际收益与边际成本影响","劳动力供给|受工资、闲暇偏好、家庭决策和人口结构影响","工资差别|由岗位、技能、地区、补偿性差异等共同形成","人力资本投资|教育培训、迁移和健康投入影响未来收益","内部劳动力市场|岗位配置和薪酬部分通过组织内部规则完成","失业类型|摩擦性、结构性、周期性失业成因不同","就业歧视|与生产率无关的差别对待会损害公平与效率"]],
+      ["公共政策与保险",["社会保险功能|通过风险共担保障基本生活并稳定预期","养老保险|基本养老保险制度包含依法参保、缴费和待遇关系","医疗保险|基本医疗保险分担符合规定的医疗费用风险","失业保险|兼具生活保障与促进就业功能","工伤保险|覆盖工作原因相关伤害风险并实行差别费率机制","生育保障|保障生育期间医疗和收入相关权益","劳动监察|劳动保障行政部门依法监督用人单位守法情况","就业服务|公共就业服务提供招聘、指导、援助和信息等服务"]]
+    ]},
+    {id:"CAR",icon:"↗",name:"职业指导与学习发展",cert:"职业指导师／企业培训师",color:"#aa6b3b",chapters:[
+      ["职业诊断",["需求澄清|区分来访者表层诉求、核心问题与现实限制","职业兴趣|兴趣反映偏好，不等同于能力或职业承诺","职业能力|通过经历、任务证据与测评综合判断","职业价值观|帮助个体澄清工作中重视的回报和环境","生涯阶段|不同阶段的探索、建立、维持与转换任务不同","决策平衡|比较选项收益、成本、风险和可逆性","信息核验|职业与岗位信息应来自可靠且及时的来源","伦理边界|尊重自主、保密，不替来访者作重大决定"]],
+      ["就业服务",["信息采集|采集岗位与求职信息需真实、完整并及时更新","岗位匹配|比较岗位要求与求职者能力、意愿和条件","求职材料|以真实经历和岗位相关成果清晰呈现","面试辅导|围绕岗位要求准备证据和结构化表达","困难群体|根据具体障碍提供分类支持与资源转介","就业援助|通过岗位、培训、政策和跟踪形成组合支持","服务记录|记录需求、建议、转介、结果和后续计划","服务评价|关注匹配质量、稳定就业、满意度和公平可及"]],
+      ["职业发展",["职业路径|可包含管理、专业、项目和跨职能多通道","能力差距|以目标岗位要求对照当前证据识别差距","发展计划|明确目标、行动、资源、期限和衡量标准","经验学习|挑战任务、复盘和反馈是重要发展方式","导师教练|导师分享经验，教练通过提问促进自我解决","内部流动|透明机会和规则支持人才保留与能力流动","转型准备|识别可迁移技能并通过小实验降低转换风险","职业韧性|持续学习、关系网络和自我调节支持长期适应"]],
+      ["学习型组织",["共同愿景|把组织方向转化为成员理解和参与的目标","知识沉淀|将关键经验转化为可复用的流程、案例和工具","复盘机制|围绕目标、事实、差距、原因与行动展开","实践社群|围绕专业问题持续交流和共创知识","心理安全|成员能够提出问题、承认错误和表达不同意见","知识分享|激励、平台、时间与管理示范共同影响分享","学习敏捷|从经验中快速提炼并应用于新情境","效果连接|组织学习最终应改善能力、行为和业务结果"]]
+    ]}
+  ];
+
+  var expansion={
+    STR:[
+      ["HR治理与服务模式",["HR治理|明确人力资源决策权、执行权、监督权与升级路径","三支柱协同|COE、HRBP与共享服务围绕共同业务结果协同","专家中心|COE负责专业政策、方法论、方案与质量标准","业务伙伴|HRBP连接业务需求与人才解决方案并推动落地","共享服务|标准化高频事务并以服务水平协议管理体验","服务目录|明确服务对象、事项、渠道、时限和责任边界","治理评审|定期检视制度有效性、例外事项、风险与改进"]],
+      ["人才供应与继任",["关键岗位识别|依据战略影响、稀缺性和替代难度识别关键岗位","人才供给池|按岗位族群建立内部、外部和临时人才供给池","继任覆盖率|评估关键岗位是否具有具备不同准备度的继任者","准备度|区分立即胜任、短期准备和长期培养等层级","人才风险图|综合空缺概率、业务影响和替代难度排序风险","经验配置|以关键经历、项目和岗位历练加速继任准备","应急继任|对突发空缺明确临时代理、授权与沟通方案"]],
+      ["组织变革与文化",["变革理由|用业务事实说明为什么变、变什么及不变的代价","利益相关方|识别受影响群体的利益、影响力和支持程度","变革沟通|按群体提供一致核心信息与双向反馈渠道","变革能力|为新流程、新角色与新行为配置培训和支持","文化诊断|结合制度、领导行为、员工体验和实际决策观察文化","文化塑造|把目标文化转化为领导行为、制度与日常仪式","变革固化|通过指标、流程、激励和复盘把新做法变成常态"]],
+      ["数字化与AI治理",["数字化目标|先定义业务问题和用户价值，再选择技术","流程再造|数字化前清理重复审批、断点与非增值活动","主数据|统一人员、组织、岗位和权限等核心数据口径","权限治理|按岗位职责授予最小必要访问权限并定期复核","算法透明|高影响HR决策应保留可解释依据与人工复核","偏差监测|持续检查数据和模型对不同群体的不利影响","AI边界|AI用于辅助判断，不替代应由责任人作出的最终决策"]]
+    ],
+    REC:[
+      ["招聘质量与分析",["招聘漏斗|分阶段跟踪曝光、申请、筛选、面试、录用与到岗","渠道质量|比较渠道的合格率、到岗率、留存和单位成本","录用质量|结合试用表现、胜任速度、留存与经理反馈评价","预测效度|用后续绩效或关键结果验证甄选工具的预测能力","招聘时效|区分流程等待、候选响应和审批延误等时间来源","拒绝原因|结构化记录候选退出与企业拒绝原因以改进流程","复盘机制|针对关键岗位和异常结果完成数据与案例复盘"]],
+      ["校园与批量招聘",["需求分批|按照岗位族、地点、到岗窗口和培养能力拆分需求","校园画像|标准应关注潜力、基础能力和可培养性","宣讲真实|如实说明岗位、发展、地点、工时和录用条件","批量筛选|统一规则并设置人工复核，避免单一自动化淘汰","群面设计|保证任务相关、观察维度清晰并配置足够评委","批量录用|建立候选排序、候补、签约和流失预案","集中入职|同步完成资料、培训、岗位分配和关怀跟踪"]],
+      ["内部流动与人才社区",["内部机会|向符合条件的员工公开岗位、项目和短期任务","流动规则|明确资格、审批、交接、薪酬和保密安排","人才社区|持续维护潜在候选人与岗位族群的关系","银牌候选|经授权保留高质量未录用者并匹配未来机会","员工推荐|规则应说明适用岗位、奖励条件和利益冲突","返聘评估|综合历史表现、离职原因、能力变化与当前岗位需求","流动成效|跟踪内部填补率、流动后绩效、留存和发展速度"]],
+      ["招聘合规与信息保护",["最小收集|只收集与甄选、录用和用工管理直接相关的信息","处理告知|向候选人说明信息用途、方式、范围与保存期限","敏感信息|处理敏感个人信息需具备更严格必要性与保护措施","自动决策|自动化筛选应保障透明、公平并提供适当解释或救济","委托处理|与招聘服务商明确处理目的、安全义务和删除返还","访问控制|仅向参与招聘决策的必要人员开放候选资料","保存到期|达到目的或期限后按规则删除、匿名化或取得新依据"]]
+    ],
+    TRN:[
+      ["领导力发展",["领导标准|从战略挑战和关键管理场景定义领导行为","分层培养|针对基层、中层与高层设计不同发展重点","行动学习|以真实业务课题连接学习、实践与成果","领导反馈|结合多来源观察帮助领导识别行为影响","教练辅导|通过目标、提问、反馈与问责支持行为改变","关键转身|岗位层级变化时调整时间、能力和工作价值重点","发展衡量|同时评估行为改变、团队体验和业务结果"]],
+      ["技能体系与认证",["技能分类|区分通用、专业、管理与未来关键技能","技能标准|用可观察任务和行为描述不同熟练等级","技能矩阵|映射岗位需求与个人现状以识别群体缺口","认证设计|将知识、操作和实际成果组合为认证证据","考评一致|统一考评任务、评分标准和考评员校准","证书维护|对易过时或高风险技能设置复核与再认证","技能应用|把技能结果连接到排班、项目、发展和人才配置"]],
+      ["数字学习与知识管理",["微学习|适合单一目标、短时复习和工作现场支持","学习路径|按先修关系、岗位任务和难度组织内容顺序","内容治理|设置内容所有者、版本、审核日期和下架规则","学习数据|区分登录、完成、练习、掌握和应用等不同指标","知识库|以可检索结构沉淀流程、案例、工具与专家经验","检索设计|用清晰标签、关键词和权限提升知识可发现性","内容迭代|依据搜索缺口、反馈和业务变化持续更新"]],
+      ["学习项目运营",["项目章程|明确业务目标、对象、范围、资源和成功标准","学员选择|依据岗位需要、准备度和应用机会选择学员","讲师管理|建立选拔、试讲、认证、反馈和持续发展机制","供应商评估|综合专业能力、交付质量、合规、成本和数据安全","学习预算|按战略优先级和预期价值配置并跟踪使用","运营风险|预先识别出勤、技术、讲师、版权与安全风险","结项移交|沉淀材料、数据、问题、经验和后续责任"]]
+    ],
+    PER:[
+      ["指标体系设计",["指标树|从战略结果分解驱动因素和可控指标","领先指标|反映未来结果的前置信号并支持过程干预","滞后指标|反映已发生结果，适合检验最终成效","指标口径|明确公式、范围、周期、数据源和责任人","阈值目标|区分底线、目标与挑战值并说明业务逻辑","反向指标|同步设置质量、风险或体验指标防止单边追求","指标退出|对失去战略相关性或诱导错误行为的指标及时取消"]],
+      ["绩效面谈",["面谈准备|提前整理目标、证据、关键事件和员工自评","开场定调|说明目的、流程并建立坦诚而尊重的氛围","事实反馈|围绕具体行为与影响，避免人格评价和模糊标签","倾听提问|了解结果背后的条件、判断和员工观点","分歧处理|回到目标、口径和证据，记录仍未解决的争议","行动约定|形成明确改进事项、支持资源、期限和复查节点","书面确认|准确记录结论，不把员工签字简单等同于认可"]],
+      ["高低绩效管理",["高绩效保留|理解关键人才动机并提供挑战、认可和发展机会","贡献扩展|让高绩效者分享方法，但避免无边界增加负担","绩效下滑|先核实目标、事实和环境变化，再判断原因","能力不足|提供明确标准、训练、辅导与合理改善时间","意愿问题|澄清期望、反馈后果并检视激励和公平感","持续不达标|依据制度、证据与法定程序审慎处理","团队修复|个体绩效问题处理后同步改善流程、协作或管理缺陷"]],
+      ["绩效治理与审计",["制度所有者|明确政策、系统、数据、培训和申诉的负责角色","周期治理|统一目标、回顾、评价、校准和结果应用节奏","例外控制|对目标变更、缺失评分和越级调整设置审批与记录","群体分析|检视部门、层级和群体之间异常评分差异","数据追溯|评分、校准和调整均应保留依据与操作记录","经理质量|评价经理目标质量、反馈频率和评分区分能力","制度复盘|结合业务结果、员工体验、争议和成本持续优化"]]
+    ],
+    PAY:[
+      ["固定薪酬管理",["薪级薪档|用岗位等级和档位支持同岗差异与成长","起薪决策|综合岗位范围、候选能力、内部公平和市场水平","调薪矩阵|结合绩效、薪酬位置和预算形成差异化建议","薪酬渗透率|反映个人薪酬在薪酬区间中的相对位置","红圈绿圈|识别高于区间或低于区间的薪酬并制定过渡措施","地区差异|依据劳动力市场、生活成本和业务策略确定地区政策","固定薪审计|检查越级、倒挂、异常差异和未经授权调整"]],
+      ["浮动激励",["激励对象|明确哪些岗位或群体能影响计划结果","绩效条件|奖励指标应与职责可控性和战略目标相关","激励曲线|规定门槛、目标、封顶及不同区间的支付关系","质量门槛|用合规、质量或客户条件约束单纯追量行为","团队个人|依据协作程度组合团队与个人激励权重","递延追索|高风险或长期结果可设置递延、调整和追索安排","计划沟通|员工应能理解目标、计算方式、周期和特殊情形"]],
+      ["福利与长期保障",["福利需求|依据员工群体需求、风险和成本选择项目","弹性福利|在统一预算和规则下允许员工选择福利组合","补充医疗|明确保障范围、等待期、理赔和个人信息保护","企业年金|建立方案需满足基本养老参保、协商和法定程序要求","健康管理|从健康风险、参与、行为改善和缺勤等维度评价","长期激励|设计归属期、绩效条件、离职处理和风险约束","福利审计|检查资格、供应商、使用、成本、税务和公平性"]],
+      ["薪资运营与审计",["薪资日历|固定数据截止、核算、复核、审批和支付节点","变动输入|入离职、考勤、绩效与调整数据需有来源和审批","双人复核|关键薪资文件和支付指令实行制备与复核分离","差异分析|比较环比、预算和异常名单以发现核算错误","补发扣回|依据规则、证据和沟通机制处理差错","权限分离|数据维护、核算、审批和付款不由同一人全程控制","审计留痕|保留计算口径、输入、审批、支付与更正记录"]]
+    ],
+    LAB:[
+      ["派遣与非全日制用工",["派遣定位|劳务派遣是补充用工形式，适用于临时性、辅助性或替代性岗位","派遣比例|用工单位使用被派遣劳动者数量不得超过用工总量规定比例","同工同酬|被派遣劳动者依法享有与用工单位同类岗位劳动者同工同酬权利","派遣许可|经营劳务派遣业务应依法取得行政许可","非全日制时长|同一单位一般平均每日不超过四小时、每周累计不超过二十四小时","非全日制试用|非全日制用工双方不得约定试用期","非全日制终止|任何一方可随时通知终止，用人单位通常不支付经济补偿"]],
+      ["员工关系与民主参与",["员工倾听|通过调查、访谈、座谈和申诉多渠道识别员工议题","意见闭环|说明采纳、不采纳、责任人、时限与后续结果","民主程序|涉及切身利益的重大事项依法履行讨论和协商程序","工会沟通|依法支持工会履职并建立常态沟通机制","集体合同|依法协商、订立、报送并履行集体合同","群体风险|关注共同诉求、传播速度、关键节点与管理回应","关系修复|承认事实、解决根因并通过一致行动重建信任"]],
+      ["纪律管理与证据",["制度依据|纪律处理应以合法有效且已公示告知的制度为基础","事实调查|客观收集时间、行为、影响和相关人员证据","申辩机会|听取员工说明并核验相反证据或合理理由","比例原则|处理程度与行为性质、后果和既往情况相匹配","一致适用|相似情形适用一致标准，差异处理需说明理由","证据链|制度、告知、事实、程序和决定之间形成完整链条","处分送达|以可证明方式向员工说明事实、依据、决定与救济渠道"]],
+      ["安全健康与特殊保护",["安全责任|用人单位应提供符合要求的劳动安全卫生条件","安全培训|对岗位风险、操作规程和应急处置进行必要培训","职业危害|依法开展告知、防护、监测和职业健康管理","工伤处置|事故发生后及时救治、报告并按规定申请认定","女职工保护|依法落实孕期、产期、哺乳期等特殊劳动保护","未成年工|对未成年工实行特殊劳动保护和定期健康检查","心理风险|通过工作设计、支持渠道和危机转介降低心理健康风险"]]
+    ],
+    QUO:[
+      ["工业工程基础",["方法研究|系统分析作业方法以减少无效动作与等待","流程程序图|记录加工、检查、搬运、等待和储存活动","动作经济|优化动作顺序、工作区域和工具布置降低疲劳","标准作业|明确最佳已知方法、顺序、时间和在制品标准","价值分析|区分客户价值、业务必要和浪费活动","现场观察|在真实作业条件下验证流程和标准假设","持续改善|通过小步试验、数据验证和标准更新形成循环"]],
+      ["排班与劳动力配置",["需求曲线|按时段、日期、渠道和技能预测工作需求","覆盖分析|比较每个时段的需求与可用技能人数","班次设计|兼顾业务覆盖、员工健康、交接和法律要求","轮班公平|通过透明规则平衡夜班、节假日和高负荷班次","休假影响|将休假、培训、缺勤和流失纳入可用工时","临时调整|设置换班、加班、借调和紧急补位规则","排班复盘|分析覆盖率、加班、等待、缺勤与员工反馈"]],
+      ["人力成本与预算",["成本口径|区分工资、奖金、社保、福利、招聘、培训和管理成本","直接间接|按业务归属合理区分直接与间接人力成本","预算驱动|以编制、薪酬、流动、调薪和业务量形成预算","滚动预测|根据实际和最新业务假设定期更新全年预测","差异分析|将实际与预算差异拆分为人数、价格、结构和时间影响","情景预算|为增长、基准和收缩情景准备不同人员方案","成本决策|同时考虑短期节省、能力损失、风险和恢复成本"]],
+      ["生产率标杆与改善",["内部标杆|比较相似团队或时期间的效率并校准差异","外部标杆|先确认业务模式、产品组合和口径可比性","全要素视角|人效变化可能来自资本、技术、流程和需求共同影响","学习曲线|重复任务随经验积累可能降低单位时间","规模效应|规模扩大对成本和效率的影响存在边界","改善组合|综合流程、技能、设备、激励和组织措施提升生产率","可持续人效|持续监测质量、安全、离职和疲劳等反作用"]]
+    ],
+    ASM:[
+      ["胜任力建模",["模型目的|根据选拔、发展或战略应用确定模型范围","关键事件|访谈高低绩效者的具体事件识别差异行为","任务映射|把关键任务、挑战与所需能力建立连接","行为分级|不同等级用可观察且递进的行为描述","模型精简|保留对绩效真正关键且可区分的少数能力","业务验证|邀请岗位专家和管理者检验内容准确性","模型维护|战略、岗位和技术变化后重新验证和更新"]],
+      ["心理测量质量",["内部一致性|检验同一构念题项之间的一致程度","重测信度|检验跨时间测量结果的稳定程度","内容效度|题目是否充分覆盖目标能力或知识范围","结构效度|测量结果的内部结构是否符合理论构念","效标效度|测评结果与绩效等外部标准之间的关系","区分度|题目能否区分不同能力水平的被测者","测量误差|解释分数时应承认误差范围，避免过度精确"]],
+      ["评价中心设计",["练习组合|用多种模拟练习覆盖目标能力和管理情境","维度覆盖|每个关键维度由多个练习提供观察机会","观察评分|观察者先记录行为，再按维度和标准评分","角色一致|演员或模拟对象按统一脚本和反应原则执行","日程控制|控制练习顺序、材料隔离、休息和突发情况","整合讨论|以跨练习行为证据形成维度结论","中心验证|以参与者反馈、评分一致和预测结果检验质量"]],
+      ["报告反馈与应用",["报告结构|依次说明目的、方法、结果、证据、限制和建议","语言审慎|使用概率和行为语言，避免给人贴永久标签","结果反馈|帮助对象理解优势、风险与具体发展行动","决策边界|测评只是决策证据之一，不替代完整人才判断","授权使用|仅按已说明目的向获授权人员提供结果","申诉复核|对程序错误、身份信息或明显异常提供复核渠道","应用追踪|检验测评结论对选拔质量和发展结果的实际贡献"]]
+    ],
+    ECO:[
+      ["人力资源供需经济",["需求弹性|工资变化对劳动力需求的影响受产品需求和替代性等因素影响","规模效应|工资成本变化可能通过产出规模影响用工需求","替代效应|相对成本变化可能促使资本、技术或不同劳动相互替代","供给弹性|劳动供给对工资变化的反应受群体和时间范围影响","保留工资|劳动者接受工作的最低工资受到替代机会与偏好影响","劳动力流动|地区、职业和组织间流动受到收益、成本与信息影响","市场分割|不同劳动力市场之间可能存在进入壁垒和规则差异"]],
+      ["招聘培训经济决策",["招聘成本|同时计算显性费用、管理工时和岗位空缺损失","错误录用|错误录用会产生绩效、管理、替换与团队影响成本","培训投资|比较预期增量收益、成本、风险和收益期限","通用培训|通用技能可跨企业使用，投资与收益分配需考虑流动","特殊培训|企业专用技能的价值更多依赖当前组织情境","学习外溢|个体学习可通过流程、协作和知识分享影响团队","投资组合|按战略重要性、回报和风险配置人才项目资源"]],
+      ["薪酬激励经济学",["效率工资|较高工资可能通过吸引、努力、留任和公平感提升效率","委托代理|激励设计需要处理目标不一致与信息不对称","风险分担|浮动薪酬比例需考虑岗位可控性和结果波动","锦标赛激励|相对排名可增强竞争，也可能损害合作与公平","团队激励|适合产出高度互依，但需防范搭便车","递延激励|延后支付可关注长期结果并控制短期行为风险","非货币激励|认可、发展、自主和工作意义也影响行为选择"]],
+      ["劳动关系与公共政策",["集体劳权|劳动者通过协商与代表机制表达共同利益","最低工资影响|政策效果取决于标准水平、执行、市场结构与企业调整","就业保护|在稳定性、调整成本与劳动力市场活力之间权衡","失业援助|收入支持与就业服务结合有助于再就业","积极政策|培训、岗位服务和就业援助改善匹配与就业能力","劳动监察|提高守法概率并纠正违法行为，维护公平竞争","政策评估|同时观察覆盖、执行、就业、收入、企业与群体差异"]]
+    ],
+    CAR:[
+      ["职业咨询工具",["生涯访谈|通过关键经历、选择和转折理解职业主题","生命线|回顾高低点以识别动机、能力和环境因素","技能清单|从任务和成果提炼可迁移技能与证据","职业锚|用于探索长期重视的能力、动机和价值组合","决策矩阵|按重要标准、权重与证据比较职业选项","小步实验|通过访谈、旁听、项目或兼职低成本验证假设","咨询记录|记录目标、过程、建议、决定与后续行动"]],
+      ["职业转换与离职支持",["转换动因|区分推力、拉力、现实约束和长期目标","能力迁移|把原岗位经验翻译为目标岗位可理解的能力证据","差距补齐|优先补充进入目标岗位所需的最小关键差距","关系网络|通过专业关系获取信息、反馈与机会","求职节奏|将目标、渠道、申请、跟进和复盘形成周期","离职支持|依法合规提供信息、咨询、培训或岗位转介","适应跟踪|关注转换后的角色学习、关系建立和心理适应"]],
+      ["培训师发展",["讲师画像|明确专业经验、教学能力、表达与职业伦理要求","课程试讲|通过真实片段检验结构、互动、表达和时间控制","引导技术|用提问、讨论、案例和练习促进参与和思考","难场处理|对沉默、跑题、冲突和质疑保持尊重并回到目标","反馈改进|根据观察标准和学习数据提供具体改进建议","讲师认证|设置明确门槛、评分、复核和有效期","讲师社群|通过共备、观摩、复盘和资源共享持续提升"]],
+      ["人才发展生态",["发展责任|组织、经理、HR与员工共同承担不同发展责任","机会市场|把项目、任务、导师和岗位机会透明连接到人才","人才评审|用一致标准讨论能力、潜力、风险和发展行动","发展公平|检视不同群体获得关键机会和支持的差异","生态伙伴|合理运用院校、机构、专家和行业资源补充能力","知识流动|通过社群、轮岗和项目促进经验跨边界传播","生态成效|用关键人才供给、能力增长、流动和业务结果评价"]]
+    ]
+  };
+  Object.keys(expansion).forEach(function(id){
+    var target=modules.find(function(m){return m.id===id});
+    expansion[id].forEach(function(ch){target.chapters.push(ch)})
+  });
+
+  var sources=[
+    {id:"SRC-01",name:"《企业人力资源管理师国家职业技能标准（2019年版）》",org:"人力资源和社会保障部",year:"2019",scope:"规划、招聘、培训、绩效、薪酬、劳动关系",url:"https://chinajob.mohrss.gov.cn/h5/c/2019-04-02/232744.shtml",status:"现行查询"},
+    {id:"SRC-02",name:"《劳动关系协调员国家职业技能标准（2019年版）》",org:"人力资源和社会保障部",year:"2019",scope:"劳动标准、合同、协商、争议处理",url:"https://chinajob.mohrss.gov.cn/upload/resources/jnbzpdf/4ccc6a76ab911e0e57b90c.pdf",status:"现行查询"},
+    {id:"SRC-03",name:"人才测评师、劳动定员定额师国家职业标准颁布通知",org:"人力资源和社会保障部",year:"2025",scope:"人才测评、劳动定员定额",url:"https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/rcrs_4225/jnrc/202510/t20251016_560431.html",status:"2025颁布"},
+    {id:"SRC-04",name:"《技能人才评价命题技术规程》",org:"人力资源和社会保障部",year:"2024",scope:"考评蓝图、试题开发、质量分析",url:"https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/rcrs_4225/jnrc/202411/W020241119554293950905.pdf",status:"有效"},
+    {id:"SRC-05",name:"《中华人民共和国劳动合同法》",org:"全国人大常委会",year:"2012修订",scope:"劳动合同订立、履行、解除、特别规定",url:"https://www.mohrss.gov.cn/xxgk2020/fdzdgknr/zcfg/fl/202011/t20201102_394622_wap.html",status:"现行文本"},
+    {id:"SRC-06",name:"《中华人民共和国劳动合同法实施条例》",org:"国务院",year:"2008",scope:"劳动合同法实施规则",url:"https://xzfg.moj.gov.cn/front/law/detail?LawID=284",status:"现行文本"},
+    {id:"SRC-07",name:"人社领域法律法规规章目录",org:"人力资源和社会保障部",year:"动态",scope:"劳动法、社保法、争议仲裁、工伤、休假等",url:"https://www.mohrss.gov.cn/SYrlzyhshbzb/ztzl/rslyyhyshj/flfggz/index.html",status:"动态核验"},
+    {id:"SRC-08",name:"国家职业标准查询系统",org:"中国就业培训技术指导中心",year:"动态",scope:"国家职业标准检索与版本核验",url:"https://osta.mohrss.gov.cn/skillStandard",status:"动态核验"},
+    {id:"SRC-09",name:"《劳务派遣暂行规定》",org:"人力资源和社会保障部",year:"2014",scope:"派遣范围、比例、合同、社保与责任",url:"https://www.mohrss.gov.cn/xxgk2020/gzk/gz/202112/P020211229555505969637.pdf",status:"现行查询"},
+    {id:"SRC-10",name:"《中华人民共和国个人信息保护法》",org:"全国人大常委会",year:"2021",scope:"招聘、测评与员工个人信息处理",url:"https://www.cac.gov.cn/2021-08/20/c_1631050028355286.htm",status:"现行文本"},
+    {id:"SRC-11",name:"经济专业技术资格规定与考试实施办法",org:"人力资源和社会保障部",year:"2020",scope:"经济师人力资源管理考试制度",url:"https://www.mohrss.gov.cn/SYrlzyhshbzb/ztzl/zyhzyzggg/zcwj_zc/zyzg/202001/t20200117_355799.html",status:"现行查询"},
+    {id:"SRC-12",name:"《企业年金办法》",org:"人力资源和社会保障部／财政部",year:"2017",scope:"企业年金建立、方案、缴费与管理",url:"https://www.mohrss.gov.cn/SYrlzyhshbzb/shehuibaozhang/zcwj/201712/t20171222_284833.html",status:"现行查询"}
+  ];
+
+  var state={doneAtoms:{},answers:{},wrong:{},bookmarks:{},history:[],pathIndex:0,streak:0,lastDate:"",mastery:{},lessonHistory:[]};
+
+  if(!state.mastery)state.mastery={};if(!state.lessonHistory)state.lessonHistory=[];if(!Array.isArray(state.history))state.history=[];if(!Array.isArray(state.lessonHistory))state.lessonHistory=[];
+  function save(){if(window.hrSync)window.hrSync(state)}
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+  function toast(t){var e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(function(){e.classList.remove("show")},1800)}
+  function allAtoms(){
+    var arr=[];
+    modules.forEach(function(m,mi){
+      m.chapters.forEach(function(ch,ci){
+        ch[1].forEach(function(raw,ai){
+          var p=typeof raw==="string"?raw.split("|"):[raw.name,raw.rule];
+          var sourceId="SRC-07";
+          if(m.id==="LAB")sourceId=ch[0].includes("派遣")?"SRC-09":(ci<2?"SRC-05":"SRC-07");
+          else if(m.id==="ASM"||m.id==="QUO")sourceId="SRC-03";
+          else if(m.id==="REC"&&ch[0].includes("信息保护"))sourceId="SRC-10";
+          else if(m.id==="ECO")sourceId="SRC-11";
+          else if(m.id==="PAY"&&ch[0].includes("福利"))sourceId="SRC-12";
+          else if(["REC","STR","TRN","PER","PAY"].includes(m.id))sourceId="SRC-01";
+          else if(m.id==="CAR")sourceId="SRC-08";
+          arr.push({id:raw.id||m.id+"-"+String(ci+1).padStart(2,"0")+"-"+String(ai+1).padStart(2,"0"),module:m.id,moduleName:m.name,chapter:ch[0],name:p[0],rule:p[1],lesson:typeof raw==="object"?raw.lesson:null,reviewedVersion:typeof raw==="object"?raw.reviewedVersion:null,difficulty:["L1","L2","L3","L4"][(ai+ci)%4],sourceId:typeof raw==="object"&&raw.lesson?raw.lesson.sourceId:sourceId,mi:mi});
+        });
+      });
+    });
+    return arr
+  }
+  var atoms=allAtoms();
+  Object.keys(state.doneAtoms).forEach(function(id){if(!state.mastery[id])state.mastery[id]={level:1,nextReview:Date.now()+86400000,correct:1,attempts:1}});
+  function seeded(n){var x=Math.sin(n*999+17)*10000;return x-Math.floor(x)}
+  function shuffle(a,seed){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(seeded(seed+i)* (i+1));var t=b[i];b[i]=b[j];b[j]=t}return b}
+  var stems=[
+    "关于“{name}”，以下哪项表述最准确？","在HR实务中，落实“{name}”最应遵循哪项原则？",
+    "某企业正在优化{name}，下列做法中最恰当的是？","从官方职能要求与规范实践看，{name}的核心是？",
+    "以下哪项最能体现对“{name}”的正确理解？","HR在检查{name}工作时，应优先确认哪一点？",
+    "一家企业在{name}方面出现偏差，下列哪项可作为正确纠偏依据？","围绕{name}开展制度设计，哪项方案更合理？",
+    "新任HR需要解释{name}，下列说法中应被保留的是？","在综合案例判断中，哪项做法符合{name}的基本要求？"
+  ];
+  function makeQuestion(atom,v){
+    var levels=["L1","L1","L2","L2","L2","L3","L3","L3","L4","L4"],cognitions=["识记","识记","理解","理解","理解","应用","应用","应用","综合判断","综合判断"];
+    var override=overrides[atom.id+"-V"+(v+1)];if(override){var oq=Object.assign({id:atom.id+"-V"+(v+1),atomId:atom.id,module:atom.module,moduleName:atom.moduleName,chapter:atom.chapter,difficulty:levels[v],cognitive:cognitions[v],type:"C",sourceId:atom.sourceId},override);if(!Array.isArray(oq.optionAnalysis))oq.optionAnalysis=oq.options.map(function(x,i){return i===oq.answer?"符合题干要求。":"未完整满足题干所问的条件。"});return oq}
+    var pool=atoms.filter(function(x){return x.module===atom.module&&x.id!==atom.id});
+    var items=shuffle([atom].concat(shuffle(pool,atom.mi*997+v*37+parseInt(atom.id.slice(-2),10)).slice(0,3)),v*83+atom.mi*11+parseInt(atom.id.slice(-2),10));
+    var opts=items.map(function(x){return x.rule}),answer=items.findIndex(function(x){return x.id===atom.id});
+    var type=v<3?"D":v<7?"S":"C";
+    return {id:atom.id+"-V"+(v+1),atomId:atom.id,module:atom.module,moduleName:atom.moduleName,chapter:atom.chapter,difficulty:levels[v],cognitive:cognitions[v],type:type,stem:stems[v].replace("{name}",atom.name),options:opts,answer:answer,explanation:"判断要点："+atom.rule+"。答题时先锁定“"+atom.name+"”的目标与适用条件，不要用相邻考点替代。",optionAnalysis:items.map(function(x){return x.id===atom.id?"符合“"+atom.name+"”的核心原则。":"这是“"+x.name+"”的原则，不能替代当前考点。"}),sourceId:atom.sourceId}
+  }
+  function bank(){var q=[];atoms.forEach(function(a){for(var i=0;i<10;i++)q.push(makeQuestion(a,i))});return q}
+  var questions=bank(),quiz=null,timer=null,lesson=null,pastSession=null,pendingExam=null,learnerProfile=null;
+  var modalReturn=null;function openModal(){modalReturn=document.activeElement;document.getElementById("modal").classList.add("show");var b=document.querySelector("#modalbox button");if(b&&b.focus)b.focus()}function closeModal(){document.getElementById("modal").classList.remove("show");if(modalReturn&&modalReturn.focus)modalReturn.focus()}
+  function moduleBy(id){return modules.find(function(m){return m.id===id})}
+  function pct(n,d){return d?Math.round(n/d*100):0}
+  function moduleStats(id){
+    var ma=atoms.filter(function(a){return a.module===id}),done=ma.filter(function(a){return state.doneAtoms[a.id]}).length;
+    var qa=Object.keys(state.answers).filter(function(k){return questions.find(function(q){return q.id===k&&q.module===id})});
+    var correct=qa.filter(function(k){return state.answers[k]===true}).length;
+    return {done:done,total:ma.length,learn:pct(done,ma.length),answered:qa.length,accuracy:pct(correct,qa.length)}
+  }
+  function setPage(id){
+    document.querySelectorAll(".page").forEach(function(p){p.classList.toggle("active",p.id===id)});
+    document.querySelectorAll("#nav button").forEach(function(b){b.classList.toggle("active",b.dataset.page===id)});
+    if(id==="home")renderHome();if(id==="certs")renderCerts();if(id==="path")renderPath();if(id==="knowledge")renderKnowledge();if(id==="practice")renderPracticeSetup();if(id==="past")renderPast();if(id==="exam")renderExamSetup();if(id==="wrong")renderWrong();if(id==="diagnosis")renderDiagnosis();if(id==="sources")renderSources();if(id==="feedback")renderFeedback();
+    window.scrollTo(0,0)
+  }
+  document.getElementById("nav").addEventListener("click",function(e){var b=e.target.closest("button[data-page]");if(b){stopTimer();setPage(b.dataset.page)}});
+  function renderHome(){
+    if(!learnerProfile||!learnerProfile.goal){renderOnboarding();return}
+    var done=Object.keys(state.doneAtoms).length,ans=Object.keys(state.answers).length,correct=Object.values(state.answers).filter(Boolean).length,weak=getWeak()[0];
+    var resume=pendingExam&&!pendingExam.finished?'<div class="card resume-exam"><div class="icon">⏱️</div><div class="resume-copy"><h3>继续未完成模拟考</h3><p>已作答 '+Object.keys(pendingExam.picks||{}).length+' / '+pendingExam.list.length+' 题，原倒计时将继续。</p></div><button class="btn primary" onclick="app.resumeExam()">继续考试</button></div>':'';
+    var groups=[
+      {icon:"🏢",name:"人力资源规划与组织",desc:"组织设计、定岗定编、人力规划、人效管理",ids:["STR","QUO"]},
+      {icon:"🧲",name:"工作分析与招聘配置",desc:"工作分析、岗位说明书、招聘、甄选、配置",ids:["REC"]},
+      {icon:"🌱",name:"培训与人才发展",desc:"培训需求、课程开发、学习转化、人才梯队",ids:["TRN","CAR"]},
+      {icon:"📊",name:"绩效管理",desc:"目标、指标、过程辅导、评价、反馈与改进",ids:["PER"]},
+      {icon:"💰",name:"薪酬福利",desc:"岗位价值、薪酬结构、激励、福利与薪税管理",ids:["PAY"]},
+      {icon:"⚖️",name:"劳动关系与合规",desc:"劳动合同、工时休假、解除终止、争议、社会保险",ids:["LAB"]},
+      {icon:"🧭",name:"人才测评与职业发展",desc:"胜任力、测评、人才盘点、继任、职业指导",ids:["ASM","CAR"]},
+      {icon:"🧠",name:"HR战略与综合管理",desc:"战略、人力资本、HR数据、组织能力与HR效能",ids:["STR","ECO"]}
+    ];
+    function groupCard(g){
+      var ga=atoms.filter(function(a){return g.ids.includes(a.module)}),gd=ga.filter(function(a){return state.doneAtoms[a.id]}).length;
+      var qids=Object.keys(state.answers).filter(function(id){var q=questions.find(function(x){return x.id===id});return q&&g.ids.includes(q.module)}),gc=qids.filter(function(id){return state.answers[id]===true}).length;
+      return '<article class="card click mother-card" onclick="app.openModule(\''+g.ids[0]+'\')"><div class="row"><div class="icon">'+g.icon+'</div><h3>'+g.name+'</h3></div><p>'+g.desc+'</p><div class="progress"><i style="width:'+pct(gd,ga.length)+'%;background:#526ad9"></i></div><div class="row between small" style="margin-top:8px"><span>'+gd+'/'+ga.length+' 已学习</span><span>练习正确率 '+(qids.length?pct(gc,qids.length)+"%":"--")+'</span></div></article>'
+    }
+    var goal=goalInfo(),base=learnerProfile.baseline&&learnerProfile.baseline.score,finalScore=learnerProfile.final&&learnerProfile.final.score,growth=base!==undefined&&finalScore!==undefined?finalScore-base:null;
+    var goalBanner='<div class="card goal-banner"><div class="icon">🧭</div><div class="goal-copy"><b>'+goal.name+'</b><p>'+goal.desc+' · 每周 '+learnerProfile.weeklyMinutes+' 分钟</p></div>'+(base===undefined?'<button class="btn primary" onclick="app.startBaseline()">完成20题基线测验</button>':'<div><span class="small">基线 '+base+'分</span>'+(finalScore!==undefined?'<div class="growth">'+(growth>=0?'+':'')+growth+'分</div>':done>=20?'<button class="btn soft" onclick="app.startFinal()">进行阶段后测</button>':'<div class="small">学习满20个知识点后开放后测</div>')+'</div>')+'</div>';
+    document.getElementById("home").innerHTML=
+      '<div class="workspace-head"><div><h1>学习总览</h1><p>学习 → 练习 → 模考 → 找出弱项 → 针对提升</p></div><button class="btn ghost" onclick="app.resetGoal()">调整目标</button></div>'+goalBanner+resume+
+      '<div class="v2hero"><div><h2>从“会背题”升级到“真正会做人力资源”</h2><p>依据中国职业标准与劳动法规，循序学习、练习与检验HR实务能力。</p><div class="hero-actions"><button class="btn" onclick="app.goPath()">继续学习</button><button class="btn" onclick="app.quick()">快速刷题</button><button class="btn" onclick="app.page(\'exam\')">模拟考试</button></div></div><div class="hero-glyphs"><span>🧠</span><span>📚</span></div></div>'+
+      '<div class="dash-title"><span>今日学习仪表板</span><small>'+new Date().toLocaleDateString("zh-CN")+'</small></div>'+
+      '<div class="grid dash-metrics"><div class="card dash-metric"><div class="icon">🧩</div><div><div class="num">600</div><p>知识点总数</p></div></div><div class="card dash-metric"><div class="icon">✅</div><div><div class="num">'+done+'</div><p>已学习 · '+pct(done,600)+'%</p></div></div><div class="card dash-metric"><div class="icon">🎯</div><div><div class="num">'+ans+'</div><p>累计答题／6,000题库</p></div></div><div class="card dash-metric"><div class="icon">📈</div><div><div class="num">'+pct(correct,ans)+'%</div><p>累计正确率</p></div></div></div>'+
+      '<div class="dash-title"><span>八大HR知识模块</span><small>600个知识点</small></div><div class="grid mother-grid">'+groups.map(groupCard).join("")+'</div>'+
+      '<div class="dash-title"><span>推荐下一步</span><small>根据你的学习记录自动调整</small></div><div class="grid recommend-grid"><div class="card recommend-card"><span class="tag O">继续学习</span><h3>'+(done?esc(weak.name):"人力资源规划")+'</h3><p>'+(done?"优先回补当前低分能力域，完成对应知识卡。":"建议从战略与组织规划的第一章开始建立底层框架。")+'</p><button class="btn soft" onclick="app.goPath()">进入学习</button></div><div class="card recommend-card"><span class="tag C">弱项强化</span><h3>'+(ans?esc(weak.name):"完成基线测验")+'</h3><p>'+(ans?"当前正确率 "+weak.accuracy+"%，建议进行10题专项训练。":"先完成10道随机题，让系统建立第一份能力画像。")+'</p><button class="btn soft" onclick="app.quick()">开始10题</button></div><div class="card recommend-card"><span class="tag S">阶段检测</span><h3>20题快速测验</h3><p>从全部能力域抽题，快速检验知识稳定度与应用能力。</p><button class="btn soft" onclick="app.page(\'exam\')">进入模考</button></div></div>'
+  }
+  var goalMap={foundation:{name:"零基础HR入门",desc:"依序建立十项HR基础能力",modules:["STR","REC","TRN","PER","PAY","LAB","ASM","QUO","ECO","CAR"]},hr_manager:{name:"企业人力资源管理",desc:"聚焦人力资源六大职能",modules:["STR","REC","TRN","PER","PAY","LAB"]},economist:{name:"中级经济师·人力资源",desc:"聚焦经济、组织、绩效、薪酬与劳动关系",modules:["ECO","STR","PER","PAY","LAB"]},labor:{name:"劳动关系与合规",desc:"聚焦劳动合同、薪酬与招聘合规",modules:["LAB","PAY","REC"]},talent:{name:"人才测评与发展",desc:"聚焦测评、职业发展与培训",modules:["ASM","CAR","TRN"]}};
+  function goalInfo(){return goalMap[learnerProfile&&learnerProfile.goal]||goalMap.foundation}
+  function renderOnboarding(){document.getElementById("home").innerHTML='<div class="onboarding"><div class="workspace-head"><div><h1>先确定你的学习目标</h1><p>系统将依目标安排优先模块，并用基线测验记录起点。</p></div></div><form class="card" id="onboardingForm"><h2>我最想完成的是</h2><div class="goal-grid">'+Object.keys(goalMap).map(function(k,i){var g=goalMap[k];return '<label class="goal-option"><input type="radio" name="goal" value="'+k+'" '+(i===0?'checked':'')+'><b>'+g.name+'</b><p>'+g.desc+'</p></label>'}).join('')+'</div><div class="grid" style="grid-template-columns:1fr 1fr"><label>目前经验<select class="control" style="width:100%;margin-top:6px" name="experience"><option value="new">零基础／准备转入HR</option><option value="junior">1至3年HR经验</option><option value="experienced">3年以上HR经验</option></select></label><label>每周可学习时间<select class="control" style="width:100%;margin-top:6px" name="weeklyMinutes"><option value="60">每周1小时</option><option value="120" selected>每周2小时</option><option value="180">每周3小时</option><option value="300">每周5小时</option></select></label></div><div class="callout" style="margin-top:18px">完成设置后，建议先做20题基线测验。后续阶段测验会显示真实进步幅度。</div><button class="btn primary" style="margin-top:18px" type="submit">建立我的学习计划</button><p id="onboardingNotice" role="status"></p></form></div>';document.getElementById("onboardingForm").onsubmit=saveGoal}
+  async function saveGoal(e){e.preventDefault();var f=new FormData(e.currentTarget),n=document.getElementById("onboardingNotice");n.textContent="正在建立学习计划…";try{learnerProfile=await window.hrSaveProfile({goal:f.get("goal"),experience:f.get("experience"),weeklyMinutes:Number(f.get("weeklyMinutes"))});state.pathIndex=Math.max(0,modules.findIndex(function(m){return m.id===goalInfo().modules[0]}));save();renderHome();toast("学习计划已建立，建议先完成基线测验")}catch(err){n.textContent=err.message}}
+  function renderCerts(){
+    var certs=[
+      ["🏅","中级经济师·人力资源管理","国家专业技术人员职业资格","组织行为、劳动力市场、人力资源管理与社会保险"],
+      ["🏢","企业人力资源管理师","国家职业技能等级","规划、招聘、培训、绩效、薪酬与劳动关系"],
+      ["⚖️","劳动关系协调员／师","国家职业技能等级","劳动标准、合同、集体协商与争议处理"],
+      ["🧭","企业人力资源管理师（人才测评师）","国家职业标准","测评设计、实施评分、人才盘点与结果应用"],
+      ["▦","企业人力资源管理师（劳动定员定额师）","国家职业标准","定岗定编、劳动定额、产能与人效"],
+      ["💰","企业人力资源管理师（薪税师）","国家职业标准方向","薪酬核算、个税、社会保险与合规"],
+      ["🌱","企业培训师","国家职业技能体系","需求分析、课程开发、实施转化与评估"],
+      ["↗️","职业指导师","国家职业技能标准","职业诊断、就业服务、职业发展与咨询"]
+    ];
+    document.getElementById("certs").innerHTML='<div class="workspace-head"><div><h1>证照地图</h1><p>查看中国HR主要证照及其学习方向</p></div><div class="status-pill">8类证照体系</div></div><div class="grid" style="margin-top:16px">'+certs.map(function(c,i){return '<article class="card"><div class="row"><div class="icon">'+c[0]+'</div><div><h3 style="margin:0">'+c[1]+'</h3><span class="small">'+c[2]+'</span></div></div><p style="margin-top:14px">'+c[3]+'</p><button class="btn soft" style="margin-top:15px" onclick="app.openModule(\''+["ECO","STR","LAB","ASM","QUO","PAY","TRN","CAR"][i]+'\')">查看对应知识</button></article>'}).join("")+'</div>'
+  }
+  function moduleCard(m){
+    var s=moduleStats(m.id);return '<article class="card click" onclick="app.openModule(\''+m.id+'\')"><div class="row between"><div class="icon" style="color:'+m.color+'">'+m.icon+'</div><span class="tag">'+s.learn+'%</span></div><h3>'+m.name+'</h3><p>'+m.cert+'</p><div class="module-foot"><div class="row between"><span>知识 '+s.done+'/'+s.total+'</span><span>做题 '+s.answered+' · '+s.accuracy+'%</span></div><div class="progress"><i style="width:'+s.learn+'%;background:'+m.color+'"></i></div></div></article>'
+  }
+  function masteryInfo(id){return state.mastery[id]||{level:0,nextReview:0,correct:0,attempts:0}}
+  function masteryLabel(id){
+    var x=masteryInfo(id);if(!x.level)return "尚未学习";
+    if(x.nextReview&&x.nextReview<=Date.now())return "需要复习";
+    if(x.level>=3)return "稳定掌握";return "初步掌握"
+  }
+  function masteryClass(id){var x=masteryInfo(id);if(x.nextReview&&x.nextReview<=Date.now()&&x.level)return "due";return x.level>=3?"stable":""}
+  function dueAtoms(){return atoms.filter(function(a){var x=masteryInfo(a.id);return x.attempts>0&&x.nextReview&&x.nextReview<=Date.now()})}
+  function chapterSummary(m,ch){
+    var list=atoms.filter(function(a){return a.module===m.id&&a.chapter===ch[0]}),learned=list.filter(function(a){return masteryInfo(a.id).level>0}).length,stable=list.filter(function(a){return masteryInfo(a.id).level>=3}).length,due=list.filter(function(a){var x=masteryInfo(a.id);return x.level>0&&x.nextReview<=Date.now()}).length;
+    return {list:list,total:list.length,learned:learned,stable:stable,due:due,pct:pct(learned,list.length)}
+  }
+  function renderPath(selected){
+    if(lesson){renderLesson();return}
+    var pathModules=goalInfo().modules.map(moduleBy).filter(Boolean),current=modules[state.pathIndex]&&modules[state.pathIndex].id,active=selected||(goalInfo().modules.includes(current)?current:pathModules[0].id);state.pathIndex=modules.findIndex(function(m){return m.id===active});save();
+    var scoped=atoms.filter(function(a){return goalInfo().modules.includes(a.module)}),m=moduleBy(active),ms=moduleStats(active),due=dueAtoms().filter(function(a){return goalInfo().modules.includes(a.module)}),stable=scoped.filter(function(a){return masteryInfo(a.id).level>=3}).length,newCount=scoped.filter(function(a){return masteryInfo(a.id).level===0}).length,today=new Date().toLocaleDateString("zh-CN"),sessions=state.lessonHistory.filter(function(x){return x.date===today}).length;
+    document.getElementById("path").innerHTML=(state.lessonDraft?'<div class="card"><button class="btn primary" onclick="app.resumeLesson()">继续未完成单元</button></div>':"")+'<div class="section-head"><div><h2>今日学习</h2><p>每次学习5个知识点，完成检查后才计入掌握</p></div>'+(due.length?'<button class="btn primary" onclick="app.startReview()">复习 '+due.length+' 项</button>':'<span class="mastery-status stable">✓ 今日没有待复习</span>')+'</div>'+
+      '<div class="grid learn-dashboard"><div class="card learn-metric"><div class="icon">📘</div><div><div class="num">'+newCount+'</div><p>尚未学习</p></div></div><div class="card learn-metric"><div class="icon">⏰</div><div><div class="num">'+due.length+'</div><p>今日复习</p></div></div><div class="card learn-metric"><div class="icon">🏅</div><div><div class="num">'+stable+'</div><p>稳定掌握</p></div></div><div class="card learn-metric"><div class="icon">⚡</div><div><div class="num">'+sessions+'</div><p>今日完成单元</p></div></div></div>'+
+      '<div class="path-layout"><aside class="card sidepanel"><div class="small" style="margin-bottom:10px">'+goalInfo().name+'学习路径</div>'+pathModules.map(function(x){var s=moduleStats(x.id);return '<div class="step '+(x.id===active?"active ":"")+(s.learn===100?"done":"")+'" onclick="app.openModule(\''+x.id+'\')"><b>'+x.icon+' '+x.name+'</b><small>'+s.done+'/'+s.total+' 已掌握</small></div>'}).join("")+'</aside><div><div class="card" style="margin-bottom:14px"><div class="row between"><div><div class="small">'+m.cert+'</div><h2 style="margin:8px 0">'+m.icon+' '+m.name+'</h2><p class="small">选择章节，开始一个约10分钟的学习单元</p></div><div style="min-width:150px"><b>'+ms.learn+'%</b><div class="progress" style="margin-top:8px"><i style="width:'+ms.learn+'%;background:'+m.color+'"></i></div></div></div></div><div class="chapter-grid">'+m.chapters.map(function(ch,ci){return chapterHtml(m,ch,ci)}).join("")+'</div></div></div>'
+  }
+  function chapterHtml(m,ch,ci){
+    var s=chapterSummary(m,ch),label=s.due?"复习 "+s.due+" 项":s.learned===s.total?"巩固练习":s.learned?"继续学习":"开始学习";
+    return '<article class="card chapter-card"><div class="row between"><span class="tag">第'+(ci+1)+'章</span><div class="chapter-ring" style="--p:'+s.pct+'%"><span>'+s.pct+'%</span></div></div><h3>'+ch[0]+'</h3><p>'+s.learned+'/'+s.total+' 已掌握 · '+s.stable+' 稳定掌握</p><div class="row small between"><span>'+(s.due?'⏰ '+s.due+'项待复习':'每次5个知识点')+'</span><button class="btn soft" onclick="app.startChapter(\''+m.id+'\',\''+ci+'\')">'+label+'</button></div></article>'
+  }
+  function startLesson(moduleId,chapter,custom,review){
+    var pool=custom&&custom.length?custom.slice():atoms.filter(function(a){return a.module===moduleId&&a.chapter===chapter});
+    pool.sort(function(a,b){var ax=masteryInfo(a.id),bx=masteryInfo(b.id),ad=ax.level>0&&ax.nextReview<=Date.now()?0:ax.level===0?1:2,bd=bx.level>0&&bx.nextReview<=Date.now()?0:bx.level===0?1:2;return ad-bd||ax.level-bx.level});
+    var chosen=pool.slice(0,5);if(!chosen.length){toast("当前没有可学习内容");return}
+    lesson={sessionId:"LS-"+Date.now()+"-"+Math.random().toString(36).slice(2,10),atoms:chosen,index:0,stage:review?"quiz":"study",qIndex:0,seen:{},selections:{},results:{},pendingRecords:[],review:!!review,title:review?"今日复习":chapter,moduleId:moduleId};
+    setPage("path");renderLesson()
+  }
+  function resumeLesson(){var d=state.lessonDraft;if(!d)return;var list=d.ids.map(function(id){return atoms.find(function(a){return a.id===id})}).filter(Boolean);if(list.length!==d.ids.length){state.lessonDraft=null;save();setPage("path");return}lesson=Object.assign({},d,{atoms:list,pendingRecords:[],moduleId:list[0].module,title:list[0].chapter});setPage("path");renderLesson()}
+  function startReview(){
+    var list=dueAtoms().slice(0,5);if(!list.length){toast("今日没有待复习内容");return}
+    startLesson(list[0].module,list[0].chapter,list,true)
+  }
+  function lessonQuestion(a,i){var level=masteryInfo(a.id).level;return makeQuestion(a,(level*2+i+2)%10)}
+  function optionFeedback(q,pick){if(!Array.isArray(q.optionAnalysis))return '';var ids=pick===undefined?[q.answer]:pick===q.answer?[q.answer]:[pick,q.answer];return '<div style="margin-top:10px">'+ids.map(function(i){return '<div><b>'+('ABCD'[i])+(i===q.answer?'（正确）':'（你的选择）')+'：</b>'+esc(q.optionAnalysis[i])+'</div>'}).join('')+'</div>'}
+  function lessonDetail(a){
+    if(!a.lesson)return '<div class="learning-visual"><div class="visual-node">🔎<br>确认事实与对象</div><div class="visual-arrow">→</div><div class="visual-node">🧭<br>'+esc(a.name)+'</div><div class="visual-arrow">→</div><div class="visual-node">🛡️<br>判断条件与风险</div></div>';
+    var d=a.lesson,src=sources.find(function(x){return x.id===d.sourceId});
+    return '<details class="deep-learning" open><summary>应用步骤与依据</summary><p><b>学习目标：</b>'+esc(d.goal)+'</p><div class="deep-grid">'+d.steps.map(function(x,i){return '<div class="deep-step"><b>'+(i+1)+'</b><br>'+esc(x)+'</div>'}).join('')+'</div><div class="case-box"><b>案例</b><br>'+esc(d.example)+'</div><div class="case-box warn"><b>容易出错</b><br>'+esc(d.pitfall)+'</div><div class="small" style="margin-top:10px">'+esc(d.article)+'</div>'+(src?'<a class="source-link" href="'+esc(src.url)+'" target="_blank" rel="noopener">查看官方依据 ↗</a>':'')+'</details>'
+  }
+  function renderLesson(){
+    state.lessonDraft=lesson&&lesson.stage!=="result"?{sessionId:lesson.sessionId,ids:lesson.atoms.map(function(a){return a.id}),index:lesson.index,stage:lesson.stage,qIndex:lesson.qIndex,seen:lesson.seen,selections:lesson.selections,results:lesson.results,review:lesson.review}:null;save();
+    var page=document.getElementById("path"),total=lesson.atoms.length;
+    if(lesson.stage==="result"){renderLessonResult();return}
+    var idx=lesson.stage==="study"?lesson.index:lesson.qIndex,a=lesson.atoms[idx],steps=lesson.atoms.map(function(x,i){return '<i class="'+(i<=idx?"on":"")+'"></i>'}).join("");
+    if(lesson.stage==="study"){
+      var shown=lesson.seen[a.id],status=masteryLabel(a.id);
+      page.innerHTML='<div class="lesson-wrap"><div class="lesson-top"><button class="btn ghost" onclick="app.exitLesson()">← 返回章节</button><div class="lesson-steps">'+steps+'</div><span class="small">'+(idx+1)+' / '+total+'</span></div><div class="card memory-card"><div class="memory-icon">'+moduleBy(a.module).icon+'</div><span class="mastery-status '+masteryClass(a.id)+'">'+status+'</span><h2>'+esc(a.name)+'</h2><p class="memory-question">先想一想：在HR工作中，这项内容最重要的原则是什么？</p>'+(!shown?'<button class="btn primary" style="align-self:center" onclick="app.revealLesson()">查看核心原则</button>':'<div class="rule-box"><b>核心原则</b><p>'+esc(a.rule)+'</p></div>'+lessonDetail(a))+'</div><div class="lesson-actions"><button class="btn ghost" onclick="app.lessonMove(-1)" '+(idx===0?"disabled":"")+'">上一项</button><span class="small">学习后将进行'+total+'题检查</span><button class="btn primary" onclick="app.lessonMove(1)">'+(idx===total-1?"开始检查":"下一项")+'</button></div></div>'
+    }else{
+      var q=lessonQuestion(a,idx),pick=lesson.selections[a.id],revealed=pick!==undefined;
+      page.innerHTML='<div class="lesson-wrap"><div class="lesson-top"><button class="btn ghost" onclick="app.exitLesson()">退出</button><div class="lesson-steps">'+steps+'</div><span class="small">'+(idx+1)+' / '+total+'</span></div><div class="card quiz-card"><div class="qtop"><span class="tag">即时检查</span><b>'+a.chapter+'</b></div><div class="qtext">'+esc(q.stem)+'</div><div class="options">'+q.options.map(function(o,i){var cls="";if(revealed){if(i===q.answer)cls=" correct";else if(i===pick)cls=" wrong"}return '<button class="option'+cls+'" onclick="app.lessonPick('+i+')"><span class="letter">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>'}).join("")+'</div>'+(revealed?'<div class="explain show"><b>'+(pick===q.answer?"回答正确":"需要再复习")+'</b><br>'+esc(q.explanation)+optionFeedback(q,pick)+'</div>':'')+'<div class="lesson-actions"><span class="small">完成后自动安排下次复习</span><button class="btn primary" onclick="app.lessonNext()">'+(idx===total-1?"查看结果":"下一题")+'</button></div></div></div>'
+    }
+  }
+  async function finishLesson(){
+    if(!lesson||lesson.stage==="result"||lesson.submitting)return;lesson.submitting=true;if(lesson.pendingRecords&&lesson.pendingRecords.length)await Promise.allSettled(lesson.pendingRecords);
+    var now=Date.now(),days=[0,1,3,7,14,30],correct=lesson.atoms.filter(function(a){return !!lesson.results[a.id]}).length;
+    if(window.hrCompleteLesson){try{var authoritative=await window.hrCompleteLesson(lesson);["mastery","doneAtoms","lessonHistory","answers","wrong","attempts"].forEach(function(k){if(authoritative[k]!==undefined)state[k]=authoritative[k]})}catch(e){lesson.submitting=false;toast("学习结果尚未保存，请联网后重试");return}}
+    else{lesson.atoms.forEach(function(a){var old=masteryInfo(a.id),ok=!!lesson.results[a.id],level=ok?(old.level===0?1:old.nextReview<=now?Math.min(5,old.level+1):old.level):Math.max(0,old.level-1);state.mastery[a.id]={level:level,nextReview:ok?(level===old.level&&old.nextReview>now?old.nextReview:now+days[Math.max(1,level)]*86400000):now,correct:(old.correct||0)+(ok?1:0),attempts:(old.attempts||0)+1};if(level>0)state.doneAtoms[a.id]=true;else delete state.doneAtoms[a.id]});state.lessonHistory.push({date:new Date().toLocaleDateString("zh-CN"),score:pct(correct,lesson.atoms.length),count:lesson.atoms.length,title:lesson.title});state.lessonHistory=state.lessonHistory.slice(-200)}
+    var today=new Date().toLocaleDateString("zh-CN"),yesterday=new Date(Date.now()-86400000).toLocaleDateString("zh-CN");if(state.lastDate!==today){state.streak=state.lastDate===yesterday?state.streak+1:1;state.lastDate=today}
+    lesson.score=pct(correct,lesson.atoms.length);lesson.correct=correct;lesson.stage="result";lesson.submitting=false;state.lessonDraft=null;save();renderLessonResult()
+  }
+  function renderLessonResult(){
+    var missed=lesson.atoms.filter(function(a){return !lesson.results[a.id]});
+    document.getElementById("path").innerHTML='<div class="lesson-wrap"><div class="card lesson-result"><div class="memory-icon">'+(lesson.score>=80?"🏆":"🌱")+'</div><div class="result-score">'+lesson.score+'%</div><h2>'+(lesson.score>=80?"本单元已完成":"需要回补后再确认")+'</h2><p>答对 '+lesson.correct+' / '+lesson.atoms.length+'。掌握状态已更新，并安排下次复习。</p><div class="result-grid">'+lesson.atoms.map(function(a){var ok=lesson.results[a.id];return '<div class="result-item"><div class="row between"><b>'+a.name+'</b><span>'+(ok?"✓":"↻")+'</span></div><span class="small">'+(ok?masteryLabel(a.id):"需要重新学习")+'</span></div>'}).join("")+'</div><div class="row" style="justify-content:center">'+(missed.length?'<button class="btn soft" onclick="app.retryLesson()">回补错项</button>':'')+'<button class="btn primary" onclick="app.exitLesson()">返回章节</button></div></div></div>'
+  }
+  function renderKnowledge(){
+    document.getElementById("knowledge").innerHTML='<div class="section-head"><div><h2>知识库</h2><p>查找并学习600个HR知识点</p></div></div><div class="toolbar"><input id="ksearch" class="control search" placeholder="搜索知识点或内容"><select id="kmodule" class="control"><option value="">全部模块</option>'+modules.map(function(m){return '<option value="'+m.id+'">'+m.name+'</option>'}).join("")+'</select><select id="klevel" class="control"><option value="">全部难度</option><option>L1</option><option>L2</option><option>L3</option><option>L4</option></select></div><div id="kresults" class="grid"></div>';
+    ["ksearch","kmodule","klevel"].forEach(function(id){document.getElementById(id).addEventListener("input",filterKnowledge)});filterKnowledge()
+  }
+  function filterKnowledge(){
+    var q=document.getElementById("ksearch").value.trim().toLowerCase(),m=document.getElementById("kmodule").value,l=document.getElementById("klevel").value;
+    var list=atoms.filter(function(a){return(!q||(a.id+" "+a.name+" "+a.rule+" "+a.chapter).toLowerCase().includes(q))&&(!m||a.module===m)&&(!l||a.difficulty===l)});
+    document.getElementById("kresults").innerHTML=list.slice(0,160).map(function(a){return '<div class="card"><div class="row between"><span class="tag">'+a.moduleName+'</span><span class="mastery-status '+masteryClass(a.id)+'">'+masteryLabel(a.id)+'</span></div><h3 style="font-size:15px">'+a.name+'</h3><p>'+a.rule+'</p><div class="row between" style="margin-top:14px"><span class="small">'+a.chapter+' · '+a.difficulty+'</span><button class="btn soft" onclick="app.learnAtom(\''+a.id+'\')">'+(masteryInfo(a.id).level?"复习此项":"学习此项")+'</button></div></div>'}).join("")+(list.length>160?'<div class="callout" style="grid-column:1/-1">当前显示前160项，请通过关键词或模块继续筛选。</div>':"")
+  }
+  function setupHtml(kind){
+    var isExam=kind==="exam";return '<div class="section-head"><div><h2>'+(isExam?"模拟考试":"刷题训练")+'</h2><p>'+(isExam?"限时答题，完成后查看成绩与弱项":"选择范围与难度后开始练习")+'</p></div></div><div class="card"><div class="grid setup-grid"><label><span class="small">模块</span><select id="'+kind+'Mod" class="control" style="width:100%;margin-top:6px"><option value="">全部模块</option>'+modules.map(function(m){return '<option value="'+m.id+'">'+m.name+'</option>'}).join("")+'</select></label><label><span class="small">难度</span><select id="'+kind+'Level" class="control" style="width:100%;margin-top:6px"><option value="">混合难度</option><option>L1</option><option>L2</option><option>L3</option><option>L4</option></select></label>'+(!isExam?'<label><span class="small">训练方式</span><select id="'+kind+'Type" class="control" style="width:100%;margin-top:6px"><option value="">综合训练</option><option value="curated">实务情境题</option></select></label>':'')+'<label><span class="small">题量</span><select id="'+kind+'Count" class="control" style="width:100%;margin-top:6px">'+(isExam?'<option>20</option><option>50</option><option>100</option>':'<option>10</option><option>20</option><option>50</option>')+'</select></label></div><div class="callout" style="margin-top:18px">'+(isExam?"每份试卷优先纳入实务情境题，完成后显示总分、各模块表现与复习建议。":"想练判断与应用，可选择“实务情境题”。")+'</div><button class="btn primary" style="margin-top:18px" onclick="app.start(\''+kind+'\')">'+(isExam?"开始模拟考试":"开始刷题")+'</button></div>'+
+      (isExam&&state.history.length?'<div class="section-head"><div><h2>最近成绩</h2></div></div><div class="grid">'+state.history.slice(-4).reverse().map(function(h){return '<div class="card"><span class="tag">'+h.date+'</span><div class="result-score" style="font-size:38px">'+h.score+'</div><p>'+h.count+'题 · '+h.mode+' · 用时 '+h.used+'</p></div>'}).join("")+'</div>':"")
+  }
+  function renderPracticeSetup(){document.getElementById("practice").innerHTML=setupHtml("practice")}
+  function renderExamSetup(){document.getElementById("exam").innerHTML=setupHtml("exam")}
+  function sourceForQuestion(q){return sources.find(function(s){return s.id===q.sourceId})}
+  function resumeExam(){if(!pendingExam)return;setPage("exam");quiz={kind:"exam",list:pendingExam.list,index:0,picks:pendingExam.picks||{},revealed:{},id:pendingExam.id,sequence:pendingExam.sequence||0,started:pendingExam.started,deadline:pendingExam.deadline,seconds:Math.max(0,Math.ceil((pendingExam.deadline-Date.now())/1000))};var first=quiz.list.findIndex(function(q){return quiz.picks[q.id]===undefined});quiz.index=first<0?0:first;renderQuiz();startTimer()}
+  async function startQuiz(kind,forced){
+    var mod=forced&&forced.module||document.getElementById(kind+"Mod")&&document.getElementById(kind+"Mod").value||"",level=document.getElementById(kind+"Level")&&document.getElementById(kind+"Level").value||"",type=document.getElementById(kind+"Type")&&document.getElementById(kind+"Type").value||"",count=forced&&forced.count||+(document.getElementById(kind+"Count")&&document.getElementById(kind+"Count").value||10);
+    var list=questions.filter(function(q){return(!mod||q.module===mod)&&(!level||q.difficulty===level)&&(!type||(type==="curated"?!!q.curatedVersion:q.type===type))&&(forced&&forced.chapter?q.chapter===forced.chapter:true)&&(forced&&forced.ids?forced.ids.includes(q.id):true)});
+    list=shuffle(list,Date.now()%100000).slice(0,Math.min(count,list.length));if(!list.length){toast("当前筛选没有可用题目");return}
+    var remote=kind==="exam"&&window.hrCreateExam?await window.hrCreateExam({count:count,module:mod,level:level,purpose:forced&&forced.purpose||"standard"}):null;
+    if(remote){list=remote.list;pendingExam=remote;}
+    quiz={kind:kind,list:list,index:0,picks:{},revealed:{},started:Date.now(),seconds:kind==="exam"?count*72:0 };if(remote){Object.assign(quiz,{id:remote.id,sequence:remote.sequence||0,picks:remote.picks,started:remote.started,deadline:remote.deadline,seconds:Math.max(0,Math.ceil((remote.deadline-Date.now())/1000))})}renderQuiz();if(kind==="exam")startTimer();else stopTimer()
+  }
+  function renderQuiz(){
+    var page=document.getElementById(quiz.kind),q=quiz.list[quiz.index],pick=quiz.picks[q.id],rev=quiz.revealed[q.id],exam=quiz.kind==="exam",src=sourceForQuestion(q);
+    page.innerHTML='<div class="quiz-shell"><div class="card quiz-card"><div class="qtop"><div><span class="tag '+q.difficulty+'">'+q.difficulty+' · '+esc(q.cognitive||"")+'</span></div><b>第 '+(quiz.index+1)+' / '+quiz.list.length+' 题</b></div><div class="qtext">'+esc(q.stem)+'</div><div class="options">'+q.options.map(function(o,i){var cls=pick===i?" selected":"";if(rev){if(i===q.answer)cls=" correct";else if(pick===i)cls=" wrong"}return '<button class="option'+cls+'" aria-label="选项 '+"ABCD"[i]+'" onclick="app.pick('+i+')"><span class="letter">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>'}).join("")+'</div><div class="explain '+(rev?"show":"")+'"><b>'+(pick===q.answer?"回答正确":"正确答案："+"ABCD"[q.answer])+'</b><br>'+esc(q.explanation)+optionFeedback(q,pick)+'</div><div class="quiz-actions"><button class="btn ghost" onclick="app.prev()" '+(quiz.index===0?"disabled":"")+'">上一题</button><div class="row">'+(!exam&&!rev?'<button class="btn soft" onclick="app.reveal()">提交并看解析</button>':"")+'<button class="btn primary" onclick="app.next()">'+(quiz.index===quiz.list.length-1?"完成":"下一题")+'</button></div></div></div><aside class="card sidepanel"><div class="row between"><b>'+(exam?"剩余时间":"训练进度")+'</b><b id="timer">'+(exam?formatTime(quiz.seconds):Object.keys(quiz.picks).length+"/"+quiz.list.length)+'</b></div><div class="progress" style="margin:12px 0"><i style="width:'+pct(Object.keys(quiz.picks).length,quiz.list.length)+'%"></i></div><div class="palette">'+quiz.list.map(function(x,i){return '<button aria-label="第 '+(i+1)+' 题" class="dot '+(quiz.picks[x.id]!==undefined?"answered ":"")+(i===quiz.index?"current":"")+'" onclick="app.jump('+i+')">'+(i+1)+'</button>'}).join("")+'</div><div class="callout" style="margin-top:16px"><b>'+q.moduleName+'</b><br>'+q.chapter+'</div>'+(!exam&&rev&&src?'<a class="source-chip" href="'+esc(src.url)+'" target="_blank" rel="noopener">📎 查看本题依据</a>':'')+'<div class="small shortcut-hint">键盘：1–4 作答 · ← → 切题 · Enter 下一题</div><button class="btn ghost" style="width:100%;margin-top:12px" onclick="app.bookmark(\''+q.id+'\')">'+(state.bookmarks[q.id]?"★ 已收藏":"☆ 收藏本题")+'</button>'+(exam?'<button class="btn danger" style="width:100%;margin-top:8px" onclick="app.finish()">提前交卷</button>':"")+'</aside></div>'
+  }
+  function pick(i){if(!quiz||quiz.finished)return;var q=quiz.list[quiz.index];if(quiz.revealed[q.id])return;quiz.picks[q.id]=i;if(quiz.kind==="exam"){if(window.hrSaveExam)window.hrSaveExam(quiz);renderQuiz();}else{quiz.revealed[q.id]=true;record(q,i);renderQuiz()}}
+  function reveal(){var q=quiz.list[quiz.index];if(quiz.picks[q.id]===undefined){toast("请先选择一个答案");return}quiz.revealed[q.id]=true;record(q,quiz.picks[q.id]);renderQuiz()}
+  function record(q,pick){var ok=pick===q.answer;state.attempts=state.attempts||[];state.attempts.push({id:q.id,correct:ok,at:Date.now()});state.attempts=state.attempts.slice(-10000);state.answers[q.id]=ok;if(ok)delete state.wrong[q.id];else state.wrong[q.id]={pick:pick,date:new Date().toLocaleDateString("zh-CN")};var remote=window.hrRecord?window.hrRecord(q,pick).catch(function(){toast("作答记录将于网络恢复后补存")}):Promise.resolve();save();return remote}
+  function next(){var q=quiz.list[quiz.index];if(quiz.picks[q.id]===undefined){toast("请先作答");return}if(quiz.kind==="practice"&&!quiz.revealed[q.id]){reveal();return}if(quiz.index===quiz.list.length-1){finishQuiz()}else{quiz.index++;renderQuiz()}}
+  async function finishQuiz(){
+    if(!quiz||quiz.finished)return;
+    var missing=quiz.list.length-Object.keys(quiz.picks).length;
+    if(quiz.kind==="exam"&&missing&&quiz.seconds>0&&!quiz.confirmed){document.getElementById('modalbox').innerHTML='<h2>确认交卷？</h2><p>还有'+missing+'题未作答。</p><div class="row"><button class="btn ghost" onclick="app.closeModal()">继续答题</button><button class="btn primary" onclick="app.confirmFinish()">确认交卷</button></div>';openModal();return}
+    if(quiz.submitting)return;quiz.submitting=true;
+    if(quiz.kind==="exam"&&window.hrSubmitExam){try{var verified=await window.hrSubmitExam(quiz);state.history=verified.history;quiz.picks=verified.exam.picks;pendingExam=null;if(verified.profile)learnerProfile=verified.profile;}catch(e){quiz.submitting=false;toast("交卷未成功："+e.message);return}}
+    quiz.finished=true;
+    stopTimer();quiz.list.forEach(function(q){if(quiz.picks[q.id]!==undefined)record(q,quiz.picks[q.id])});
+    var answered=quiz.list.filter(function(q){return quiz.picks[q.id]!==undefined}),correct=answered.filter(function(q){return quiz.picks[q.id]===q.answer}).length,score=pct(correct,quiz.list.length),used=formatTime(Math.round((Date.now()-quiz.started)/1000));
+    if(quiz.kind==="exam"&&!window.hrSubmitExam){state.history.push({date:new Date().toLocaleDateString("zh-CN"),score:score,count:quiz.list.length,mode:"模拟考",used:used});state.history=state.history.slice(-20);save()}
+    var grouped={};quiz.list.forEach(function(q){if(!grouped[q.moduleName])grouped[q.moduleName]={n:0,c:0};grouped[q.moduleName].n++;if(quiz.picks[q.id]===q.answer)grouped[q.moduleName].c++});
+    document.getElementById("modalbox").innerHTML='<div class="eyebrow">本次结果</div><div class="result-score">'+score+'分</div><h2>'+(score>=80?"表现稳健，继续提升综合应用":score>=60?"基础已建立，建议立即回补弱项":"建议回到知识卡完成一轮学习")+'</h2><p class="small">答对 '+correct+' / '+quiz.list.length+' · 用时 '+used+'</p>'+Object.keys(grouped).map(function(k){var s=pct(grouped[k].c,grouped[k].n);return '<div class="barrow"><span>'+k+'</span><div class="bar"><i style="width:'+s+'%"></i></div><b>'+s+'%</b></div>'}).join("")+'<div class="row" style="margin-top:20px"><button class="btn primary" onclick="app.closeResult()">查看能力诊断</button><button class="btn ghost" onclick="app.closeModal()">关闭</button></div>';document.getElementById("modalbox").innerHTML+=reviewHtml();openModal()
+  }
+  function reviewHtml(){return '<details><summary>逐题检讨</summary>'+quiz.list.map(function(q,i){var src=sourceForQuestion(q);return '<article class="card"><h3>'+(i+1)+'. '+esc(q.stem)+'</h3><p>你的答案：'+(quiz.picks[q.id]===undefined?'未作答':esc(q.options[quiz.picks[q.id]]))+'</p><p>正确答案：'+esc(q.options[q.answer])+'</p><p>'+esc(q.explanation)+'</p>'+optionFeedback(q,quiz.picks[q.id])+(src?'<a class="source-chip" href="'+esc(src.url)+'" target="_blank" rel="noopener">📎 查看依据</a>':'')+'</article>'}).join('')+'</details>'}
+  function startTimer(){stopTimer();if(!quiz.deadline)quiz.deadline=quiz.started+quiz.seconds*1000;timer=setInterval(function(){if(!quiz||quiz.finished)return;quiz.seconds=Math.max(0,Math.ceil((quiz.deadline-Date.now())/1000));var e=document.getElementById("timer");if(e)e.textContent=formatTime(quiz.seconds);if(quiz.seconds<=0){stopTimer();finishQuiz()}},1000)}
+  function stopTimer(){if(timer)clearInterval(timer);timer=null}
+  function formatTime(s){s=Math.max(0,s);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+  var pastPapers=[
+    {id:"2025-economist",year:"2025",title:"中级经济师·人力资源",focus:"组织行为、绩效、薪酬与劳动关系",modules:["ECO","STR","PER","PAY","LAB"],icon:"📘"},
+    {id:"2024-enterprise",year:"2024",title:"企业人力资源管理师",focus:"六大职能综合判断与工作应用",modules:["STR","REC","TRN","PER","PAY","LAB"],icon:"🏢"},
+    {id:"2023-labor",year:"2023",title:"劳动关系协调专题",focus:"合同、工时、争议与用工风险",modules:["LAB","PAY"],icon:"⚖️"},
+    {id:"2022-talent",year:"2022",title:"人才测评与发展专题",focus:"测评、招聘、培训与职业发展",modules:["ASM","REC","TRN","CAR"],icon:"🧭"}
+  ];
+  function pastStats(){var list=state.pastHistory||[];return {rounds:list.length,best:list.length?Math.max.apply(null,list.map(function(x){return x.score})):0,answered:list.reduce(function(n,x){return n+x.count},0)}}
+  function renderPast(){
+    if(pastSession&&!pastSession.finished){renderPastQuiz();return}
+    var s=pastStats();
+    document.getElementById("past").innerHTML='<div class="past-hero"><div><div class="eyebrow" style="color:#ffd66d">历届考题训练</div><h1>不只记答案，更要看懂出题人的考点</h1><p>按年度与考试方向复习代表性考点。引导教练会在作答前提示拆题方法，作答后说明核心观念、常见陷阱与迁移应用。</p></div><div class="icon">📜</div></div><div class="past-report"><div class="card"><b>'+s.rounds+'</b><span class="small">完成训练卷</span></div><div class="card"><b>'+s.best+'分</b><span class="small">历次最佳</span></div><div class="card"><b>'+s.answered+'</b><span class="small">累计复习题</span></div></div><div class="section-head"><div><h2>选择历届专题卷</h2><p>每卷12题，完成后纳入能力诊断与错题回补</p></div></div><div class="grid paper-grid">'+pastPapers.map(function(p){return '<article class="card paper-card"><div class="row between"><div class="icon">'+p.icon+'</div><span class="tag">12题</span></div><div class="paper-year">'+p.year+'</div><h3>'+p.title+'</h3><p>'+p.focus+'</p><button class="btn primary" style="margin-top:16px" onclick="app.startPast(\''+p.id+'\')">开始复习</button></article>'}).join("")+'</div><div class="callout" style="margin-top:18px"><b>学习说明：</b>本区依据公开考试大纲、职业标准与高频考点重构训练，不冒充或复制未授权原卷；重点是训练历届命题方向与可迁移的判断能力。</div>'
+  }
+  function startPast(id){
+    var paper=pastPapers.find(function(x){return x.id===id});if(!paper)return;
+    var pool=questions.filter(function(q){return paper.modules.includes(q.module)&&q.difficulty!=="L1"});
+    var seed=Number(paper.year)+paper.modules.length*97,list=shuffle(pool,seed).slice(0,12);
+    pastSession={paper:paper,list:list,index:0,picks:{},revealed:{},hints:{},started:Date.now(),finished:false};renderPastQuiz()
+  }
+  function coachFor(q){var a=atoms.find(function(x){return x.id===q.atomId});return {focus:"先圈出题干中的对象、条件与目标，再排除只讲相邻概念的选项。",concept:a?a.name:q.chapter,rule:a?a.rule:q.explanation,transfer:"如果题干换成制度设计或管理情境，仍要检查做法是否满足同一原则与适用边界。"}}
+  function renderPastQuiz(){
+    var ps=pastSession,q=ps.list[ps.index],pick=ps.picks[q.id],rev=ps.revealed[q.id],hint=ps.hints[q.id],c=coachFor(q),page=document.getElementById("past");
+    page.innerHTML='<div class="workspace-head"><div><h1>'+ps.paper.year+' · '+ps.paper.title+'</h1><p>第 '+(ps.index+1)+' / '+ps.list.length+' 题 · '+q.moduleName+'</p></div><button class="btn ghost" onclick="app.exitPast()">退出训练</button></div><div class="coach-layout"><div class="card quiz-card"><div class="qtop"><span class="tag '+q.difficulty+'">'+q.difficulty+' · '+esc(q.cognitive||"综合判断")+'</span><b>'+q.chapter+'</b></div><div class="qtext">'+esc(q.stem)+'</div>'+(!rev?'<button class="btn soft" onclick="app.pastHint()">'+(hint?'收起教练提示':'💡 请教练提示拆题方向')+'</button>':'')+(hint&&!rev?'<div class="coach-box" style="margin-top:12px"><h3>先别急着选答案</h3><div class="coach-step"><i>1</i><span>'+esc(c.focus)+'</span></div><div class="coach-step"><i>2</i><span>这题真正要辨认的是：<b>'+esc(c.concept)+'</b></span></div></div>':'')+'<div class="options" style="margin-top:16px">'+q.options.map(function(o,i){var cls=pick===i?' selected':'';if(rev){if(i===q.answer)cls=' correct';else if(pick===i)cls=' wrong'}return '<button class="option'+cls+'" onclick="app.pastPick('+i+')" '+(rev?'disabled':'')+'><span class="letter">'+"ABCD"[i]+'</span><span>'+esc(o)+'</span></button>'}).join("")+'</div>'+(rev?'<div class="explain show"><b>'+(pick===q.answer?'判断正确':'正确答案：'+"ABCD"[q.answer])+'</b><br>'+esc(q.explanation)+'<div class="concept-map"><div>核心观念<br>'+esc(c.concept)+'</div><div>常见陷阱<br>相邻概念偷换</div><div>迁移应用<br>检查条件与边界</div></div><p style="margin-bottom:0"><b>教练追问：</b>'+esc(c.transfer)+'</p></div>':'')+'<div class="quiz-actions"><button class="btn ghost" onclick="app.pastMove(-1)" '+(ps.index===0?'disabled':'')+'>上一题</button>'+(rev?'<button class="btn primary" onclick="app.pastMove(1)">'+(ps.index===ps.list.length-1?'完成训练':'下一题')+'</button>':'<button class="btn primary" onclick="app.pastSubmit()">提交答案</button>')+'</div></div><aside class="coach-box"><h3>🧠 智能考题教练</h3><p>本轮训练不是背选项，而是掌握三件事：</p><div class="coach-step"><i>1</i><span>辨识题目正在考哪一个HR概念</span></div><div class="coach-step"><i>2</i><span>找出选项中的偷换对象与遗漏条件</span></div><div class="coach-step"><i>3</i><span>把原则迁移到真实工作场景</span></div><div class="progress" style="margin-top:18px"><i style="width:'+pct(Object.keys(ps.revealed).length,ps.list.length)+'%;background:#d29b20"></i></div><p class="small">已完成 '+Object.keys(ps.revealed).length+' / '+ps.list.length+' 题</p></aside></div>'
+  }
+  function pastPick(i){var q=pastSession.list[pastSession.index];if(pastSession.revealed[q.id])return;pastSession.picks[q.id]=i;renderPastQuiz()}
+  function pastSubmit(){var q=pastSession.list[pastSession.index],pick=pastSession.picks[q.id];if(pick===undefined){toast("请先选择一个答案");return}pastSession.revealed[q.id]=true;record(q,pick);renderPastQuiz()}
+  function pastMove(d){if(d<0&&pastSession.index>0){pastSession.index--;renderPastQuiz();return}if(d>0&&pastSession.index<pastSession.list.length-1){pastSession.index++;renderPastQuiz();return}if(d>0)finishPast()}
+  function finishPast(){
+    var ps=pastSession,correct=ps.list.filter(function(q){return ps.picks[q.id]===q.answer}).length,score=pct(correct,ps.list.length),weak={};ps.list.forEach(function(q){if(ps.picks[q.id]!==q.answer)weak[q.moduleName]=(weak[q.moduleName]||0)+1});
+    state.pastHistory=state.pastHistory||[];state.pastHistory.push({id:ps.paper.id,year:ps.paper.year,title:ps.paper.title,score:score,count:ps.list.length,date:new Date().toLocaleDateString("zh-CN")});state.pastHistory=state.pastHistory.slice(-50);save();ps.finished=true;
+    document.getElementById("past").innerHTML='<div class="card lesson-result"><div class="eyebrow">历届专题训练完成</div><div class="result-score">'+score+'分</div><h2>'+(score>=85?'你已掌握本卷主要命题逻辑':score>=60?'基础观念已建立，建议回补易错模块':'先回看核心知识，再进行一次针对练习')+'</h2><p>答对 '+correct+' / '+ps.list.length+' 题</p><div class="coach-box" style="max-width:720px;margin:18px auto;text-align:left"><h3>教练复盘</h3><p>'+(Object.keys(weak).length?'优先回补：'+Object.keys(weak).sort(function(a,b){return weak[b]-weak[a]}).slice(0,3).join('、')+'。复习时请用“概念—条件—应用边界”重新整理。':'本卷没有明显弱项。下一步可选择其他年度专题，扩大考点覆盖。')+'</p></div><div class="row" style="justify-content:center"><button class="btn primary" onclick="app.restartPast()">再练一次</button><button class="btn ghost" onclick="app.exitPast()">返回历届考题</button><button class="btn soft" onclick="app.page(\'wrong\')">查看错题</button></div></div>'
+  }
+  function renderWrong(){
+    var ids=Object.keys(state.wrong),list=ids.map(function(id){return questions.find(function(q){return q.id===id})}).filter(Boolean);
+    document.getElementById("wrong").innerHTML='<div class="section-head"><div><h2>错题回补</h2><p>回看知识并重新练习答错的题目</p></div>'+(list.length?'<button class="btn primary" onclick="app.retryWrong()">开始错题训练</button>':"")+'</div>'+(list.length?'<div class="grid">'+list.slice(0,100).map(function(q){var a=atoms.find(function(x){return x.id===q.atomId});return '<div class="card"><div class="row between"><span class="tag '+q.difficulty+'">'+q.difficulty+'</span></div><h3 style="font-size:15px">'+a.name+'</h3><p>'+a.rule+'</p><div class="row between" style="margin-top:14px"><span class="small">'+q.moduleName+'</span><button class="btn soft" onclick="app.learnAtom(\''+a.id+'\')">回看知识</button></div></div>'}).join("")+'</div>':'<div class="card empty"><div class="big">✓</div><h2>当前没有错题</h2><p>完成刷题或模拟考后，错题会自动收录在这里。</p><button class="btn primary" onclick="app.page(\'practice\')">去刷题</button></div>')
+  }
+  function getWeak(){
+    return modules.map(function(m){var s=moduleStats(m.id);return {id:m.id,name:m.name,answered:s.answered,accuracy:s.answered?s.accuracy:0,learn:s.learn}}).sort(function(a,b){var ax=a.answered?0:1,bx=b.answered?0:1;return ax-bx||a.accuracy-b.accuracy||a.learn-b.learn})
+  }
+  function renderDiagnosis(){
+    var weak=getWeak(),total=Object.keys(state.answers).length;
+    document.getElementById("diagnosis").innerHTML='<div class="section-head"><div><h2>能力诊断</h2><p>查看能力表现与下一步学习建议</p></div></div><div class="diagnosis"><div class="card"><h3>十项能力表现</h3>'+weak.map(function(x){var score=x.answered?Math.round(x.accuracy*.75+x.learn*.25):x.learn;return '<div class="barrow"><span>'+x.name+'</span><div class="bar"><i style="width:'+score+'%;background:'+(score<60?"#c9504b":score<80?"#e49b2f":"#0b6b57")+'"></i></div><b>'+score+'</b></div>'}).join("")+'</div><div><div class="card" style="margin-bottom:16px"><h3>下一步建议</h3>'+(total>=10?weak.slice(0,3).map(function(x,i){return '<div class="row" style="padding:12px 0;border-bottom:1px solid var(--line)"><div class="icon" style="width:34px;height:34px;font-size:14px">'+(i+1)+'</div><div><b>'+x.name+'</b><div class="small">正确率 '+x.accuracy+'% · 学习 '+x.learn+'%</div></div><button class="btn soft" style="margin-left:auto" onclick="app.openModule(\''+x.id+'\')">回补</button></div>'}).join(""):'<div class="empty"><p>至少完成10道题，系统才能形成有效诊断。</p><button class="btn primary" onclick="app.quick()">开始基线测验</button></div>')+'</div><div class="card"><h3>数据充分度</h3><div class="result-score" style="font-size:40px">'+Math.min(100,total,Math.round(weak.filter(function(x){return x.answered>=10}).length/5*100))+'%</div><p>已答 '+total+' 题。累计完成100题并覆盖至少5个模块后，分析会更加稳定。</p></div></div></div>'
+  }
+  function renderSources(){
+    document.getElementById("sources").innerHTML='<div class="section-head"><div><h2>官方资料池</h2><p>查看系统学习内容所依据的官方文件</p></div></div><div class="card"><table class="source-table"><thead><tr><th>官方文件</th><th>发布单位／年份</th><th>覆盖内容</th><th>状态</th></tr></thead><tbody>'+sources.map(function(s){return '<tr><td><a href="'+s.url+'" target="_blank" rel="noopener" style="color:var(--green);font-weight:800">'+s.name+'</a></td><td>'+s.org+'<br><span class="small">'+s.year+'</span></td><td>'+s.scope+'</td><td>'+s.status+'</td></tr>'}).join("")+'</tbody></table></div><div class="callout" style="margin-top:16px"><b>使用提醒：</b> 法规、缴费基数、税率、最低工资和考试大纲可能调整，实际应用时请核对所在地最新规定。</div>'
+  }
+  function feedbackLabel(status){return status==="resolved"?"已处理":status==="reviewing"?"处理中":"已收到"}
+  function feedbackType(type){return {suggestion:"功能建议",content:"内容建议",experience:"使用体验",problem:"问题回报",other:"其他"}[type]||"其他"}
+  async function renderFeedback(){
+    var page=document.getElementById("feedback");page.innerHTML='<div class="workspace-head"><div><h1>意见反馈</h1><p>告诉我们哪里可以做得更好</p></div><div class="status-pill">由管理团队阅览</div></div><div class="feedback-layout"><form class="card feedback-form" id="feedbackForm"><h2>提出建议</h2><p>你的账号会随反馈一并记录，方便管理团队辨识问题。</p><label>反馈类型<select name="category" required><option value="suggestion">功能建议</option><option value="content">内容建议</option><option value="experience">使用体验</option><option value="problem">问题回报</option><option value="other">其他</option></select></label><label>主题<input name="subject" maxlength="80" placeholder="请简要说明重点" required></label><label>详细内容<textarea name="message" maxlength="2000" placeholder="请说明发生位置、你的建议或希望改善的方式" oninput="document.getElementById(\'feedbackCount\').textContent=this.value.length+\' / 2000\'" required></textarea></label><div class="row between"><span class="small">请勿填写身份证、银行卡等敏感资料</span><span class="small" id="feedbackCount">0 / 2000</span></div><button class="btn primary" style="margin-top:16px" type="submit">提交反馈</button><p id="feedbackNotice" role="status"></p></form><div><div class="section-head" style="margin-top:0"><div><h2>我的反馈</h2><p>最近30笔提交记录</p></div></div><div id="feedbackList"><div class="card">正在载入…</div></div></div></div>';document.getElementById("feedbackForm").onsubmit=submitFeedback;
+    try{var r=await api("feedback"),list=r.feedbacks,box=document.getElementById("feedbackList");if(!box)return;box.innerHTML=list.length?list.map(function(x){return '<article class="card feedback-item '+x.status+'"><div class="feedback-meta"><span class="tag">'+feedbackType(x.category)+'</span><b>'+feedbackLabel(x.status)+'</b></div><h3>'+esc(x.subject)+'</h3><p class="feedback-message">'+esc(x.message)+'</p>'+(x.publicReply?'<div class="reply-box"><b>管理团队回复</b><br>'+esc(x.publicReply)+'<div class="small">'+(x.repliedAt?new Date(x.repliedAt).toLocaleString("zh-CN"):"")+'</div></div>':'')+'<div class="small" style="margin-top:12px">'+new Date(x.createdAt).toLocaleString("zh-CN")+'</div></article>'}).join(""):'<div class="card feedback-empty"><div class="big">💬</div><h3>尚未提交反馈</h3><p>你的建议会成为下一轮优化的重要参考。</p></div>'}catch(e){var box=document.getElementById("feedbackList");if(box)box.innerHTML='<div class="card bad">载入失败：'+esc(e.message)+'</div>'}
+  }
+  async function submitFeedback(e){e.preventDefault();var form=e.currentTarget,button=form.querySelector("button[type=submit]"),notice=document.getElementById("feedbackNotice"),data=new FormData(form);button.disabled=true;notice.textContent="正在提交…";try{await api("feedback","POST",{category:data.get("category"),subject:data.get("subject"),message:data.get("message")});toast("反馈已提交，谢谢你的建议");renderFeedback()}catch(err){notice.textContent=err.message;button.disabled=false}}
+  window.app={
+    page:setPage,goPath:function(){if(state.lessonDraft)resumeLesson();else{lesson=null;setPage("path");renderPath(goalInfo().modules[0])}},resumeLesson:resumeLesson,openModule:function(id){lesson=null;setPage("path");renderPath(id)},
+    startBaseline:function(){setPage("exam");startQuiz("exam",{count:20,purpose:"baseline"})},startFinal:function(){setPage("exam");startQuiz("exam",{count:20,purpose:"final"})},resetGoal:function(){learnerProfile=null;renderHome()},
+    learnAtom:function(id){var a=atoms.find(function(x){return x.id===id});if(a)startLesson(a.module,a.chapter,[a],false)},
+    startLesson:startLesson,startReview:startReview,startChapter:function(m,i){startLesson(m,moduleBy(m).chapters[Number(i)][0])},confirmFinish:function(){if(!quiz)return;quiz.confirmed=true;window.app.closeModal();finishQuiz()},
+    revealLesson:function(){var a=lesson.atoms[lesson.index];lesson.seen[a.id]=true;renderLesson()},
+    lessonMove:function(d){
+      if(!lesson||lesson.stage!=="study")return;
+      var a=lesson.atoms[lesson.index];if(d>0&&!lesson.seen[a.id]){toast("请先查看核心原则");return}
+      if(d>0&&lesson.index===lesson.atoms.length-1){lesson.stage="quiz";lesson.qIndex=0;renderLesson();return}
+      lesson.index=Math.max(0,Math.min(lesson.atoms.length-1,lesson.index+d));renderLesson()
+    },
+    lessonPick:function(i){var a=lesson.atoms[lesson.qIndex];if(lesson.selections[a.id]!==undefined)return;var q=lessonQuestion(a,lesson.qIndex);lesson.selections[a.id]=i;lesson.results[a.id]=i===q.answer;lesson.pendingRecords.push(record(q,i));renderLesson()},
+    lessonNext:function(){var a=lesson.atoms[lesson.qIndex];if(lesson.selections[a.id]===undefined){toast("请先选择答案");return}if(lesson.qIndex===lesson.atoms.length-1)return finishLesson();else{lesson.qIndex++;renderLesson()}},
+    retryLesson:function(){var missed=lesson.atoms.filter(function(a){return !lesson.results[a.id]});if(missed.length)startLesson(missed[0].module,missed[0].chapter,missed,false)},
+    exitLesson:function(){var id=lesson&&lesson.moduleId||modules[state.pathIndex].id;lesson=null;renderPath(id)},
+    start:startQuiz,resumeExam:resumeExam,quick:function(){setPage("practice");startQuiz("practice",{count:10})},practiceChapter:function(m,ch){setPage("practice");startQuiz("practice",{module:m,chapter:ch,count:10})},
+    startPast:startPast,pastPick:pastPick,pastSubmit:pastSubmit,pastMove:pastMove,pastHint:function(){var q=pastSession.list[pastSession.index];pastSession.hints[q.id]=!pastSession.hints[q.id];renderPastQuiz()},exitPast:function(){pastSession=null;renderPast()},restartPast:function(){var id=pastSession.paper.id;startPast(id)},
+    pick:pick,reveal:reveal,next:next,prev:function(){if(quiz.index>0){quiz.index--;renderQuiz()}},jump:function(i){quiz.index=i;renderQuiz()},
+    finish:finishQuiz,bookmark:function(id){state.bookmarks[id]=!state.bookmarks[id];save();renderQuiz();toast(state.bookmarks[id]?"已收藏":"已取消收藏")},
+    retryWrong:function(){var ids=Object.keys(state.wrong);setPage("practice");startQuiz("practice",{ids:ids,count:Math.min(50,ids.length)})},
+    closeModal:closeModal,closeResult:function(){closeModal();setPage("diagnosis")}
+  };
+  document.getElementById("modal").addEventListener("click",function(e){if(e.target.id==="modal")window.app.closeModal()});
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeModal()});
+  document.addEventListener("keydown",function(e){if(!quiz||quiz.finished||document.getElementById("modal").classList.contains("show")||/INPUT|SELECT|TEXTAREA|BUTTON|A/.test((e.target&&e.target.tagName)||""))return;if(/^[1-4]$/.test(e.key)){e.preventDefault();pick(Number(e.key)-1)}else if(e.key==="ArrowLeft"){e.preventDefault();window.app.prev()}else if(e.key==="ArrowRight"||e.key==="Enter"){e.preventDefault();next()}});
+  window.hrBridge={
+    load:function(data,progress,unfinishedExam,profile){
+      stopTimer();quiz=null;lesson=null;pendingExam=unfinishedExam||null;learnerProfile=profile||null;modules=data.modules;sources=data.sources;stems=data.stems;overrides=data.overrides||{};
+      state=Object.assign({doneAtoms:{},answers:{},wrong:{},bookmarks:{},history:[],pastHistory:[],pathIndex:0,streak:0,lastDate:"",mastery:{},lessonHistory:[]},progress||{});
+      if(!Array.isArray(state.pastHistory))state.pastHistory=[];
+      if(!state.mastery)state.mastery={};if(!state.lessonHistory)state.lessonHistory=[];
+      if(state.lessonDraft&&!state.lessonDraft.sessionId)state.lessonDraft.sessionId="LS-"+Date.now()+"-"+Math.random().toString(36).slice(2,10);
+      atoms=allAtoms();questions=bank();
+      Object.keys(state.doneAtoms).forEach(function(id){if(!state.mastery[id])state.mastery[id]={level:1,nextReview:Date.now()+86400000,correct:1,attempts:1}});
+      document.title=(data.title||"中国人力资源职能系统")+" · 学习系统";
+      var brand=document.querySelector(".side-brand b");if(brand)brand.textContent=data.title||"中国人力资源职能系统"
+    },
+    home:function(){setPage("home")},profile:function(p){learnerProfile=p;renderHome()},
+    stop:function(){stopTimer();quiz=null;lesson=null}
+  };
+
+})();
+</script>
+<script src="shared.js"></script><script src="client.js"></script>
+</body>
+</html>
+
