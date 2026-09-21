@@ -18,15 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Diagnose Vercel aliases
+      - name: Verify formal HR service
         run: |
-          for url in             "https://esg-api-six.vercel.app/api/hr?path=session"             "https://esg-api-git-master-xhfpoaco78813-stacks-projects.vercel.app/api/hr?path=session"             "https://esg-api-git-main-xhfpoaco78813-stacks-projects.vercel.app/api/hr?path=session"; do
-            echo "=== $url"
-            curl --max-time 15 --silent --show-error --dump-header - --output /tmp/body.txt --write-out "EFFECTIVE=%{url_effective} STATUS=%{http_code}\n" "$url" || true
-            head -c 200 /tmp/body.txt || true
-            echo
-          done
-          exit 1
+          status=$(curl --retry 3 --retry-delay 3 --silent --output /tmp/hr-response.json --write-out "%{http_code}" "https://esg-api-six.vercel.app/api/hr?path=session")
+          test "$status" = "401"
+          grep -q '"error"' /tmp/hr-response.json
       - uses: actions/configure-pages@v5
         with:
           enablement: true
