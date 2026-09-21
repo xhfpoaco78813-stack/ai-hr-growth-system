@@ -18,26 +18,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Discover and verify formal HR service
+      - name: Verify formal HR service
         run: |
-          urls=(
-            "https://esg-api-six.vercel.app/api/hr?path=session"
-            "https://esg-api-xhfpoaco78813-stacks-projects.vercel.app/api/hr?path=session"
-            "https://esg-api-git-main-xhfpoaco78813-stacks-projects.vercel.app/api/hr?path=session"
-            "https://esg-api-xhfpoaco78813-stack.vercel.app/api/hr?path=session"
-          )
-          for url in "${urls[@]}"; do
-            status=$(curl --max-time 15 --silent --location --output /tmp/hr-response.txt --write-out "%{http_code}" "$url" || true)
-            echo "CHECK=$url HTTP_STATUS=$status"
-            head -c 300 /tmp/hr-response.txt || true
-            echo
-          done
-          echo "VERCEL_API"
-          curl --max-time 15 --silent --location "https://api.vercel.com/v13/deployments/1cPFeovAKwAbhdPqtETGvpXxVACG" | head -c 1000 || true
-          echo
-          echo "VERCEL_DASHBOARD_URLS"
-          curl --max-time 15 --silent --location "https://vercel.com/xhfpoaco78813-stacks-projects/esg-api/1cPFeovAKwAbhdPqtETGvpXxVACG" | grep -oE 'https://[^" ]+vercel\.app' | head -20 || true
-          exit 1
+          status=$(curl --retry 3 --retry-delay 3 --silent --output /tmp/hr-response.json --write-out "%{http_code}" "https://esg-api-six.vercel.app/api/hr?path=session")
+          test "$status" = "401"
+          grep -q '"error"' /tmp/hr-response.json
       - uses: actions/configure-pages@v5
         with:
           enablement: true
