@@ -35,7 +35,7 @@
       <button data-page="past"><span class="ico">▣</span><span>历届考题</span></button>
       <button data-page="report"><span class="ico">▥</span><span>能力报告</span></button>
     </nav>
-    <div class="side-foot">试用进度仅保存在本机浏览器。<a href="https://hr-learning-system-cn.xhfpoaco78813.chatgpt.site">进入正式版 →</a></div>
+    <div class="side-foot">试用进度仅保存在本机浏览器。<a href="../formal/">进入正式版 →</a></div>
   </aside>
   <main id="main">
     <header class="topbar"><h1 id="pageTitle">体验首页</h1><div class="trial-limit"><span><strong>免登录</strong> · 15分钟体验</span><span>60知识点 · 600题</span></div></header>
@@ -62,7 +62,7 @@
 <div class="toast" id="toast"></div>
 <script src="content.js"></script>
 <script>
-const C=window.TRIAL_CONTENT, storeKey='system-hr-trial-v1', formal='https://hr-learning-system-cn.xhfpoaco78813.chatgpt.site';
+const C=window.TRIAL_CONTENT, storeKey='system-hr-trial-v1', formal='../formal/';
 const icons={STR:'▦',REC:'⌕',TRN:'♧',PER:'▥',PAY:'◇',LAB:'⚖',ASM:'◉',QUO:'⌗',ECO:'▤',CAR:'⌁'};
 let state=load(), currentModule=C.modules[0].id, currentAtom=0, practice=[],practiceIndex=0,practicePick=null,exam=[],examIndex=0,examPicks={},pastTrack='hr_manager',pastIndex=0,pastPick=null,pastHint=0;
 function load(){try{return Object.assign({learned:{},attempts:[],pastAttempts:[],exam:null},JSON.parse(localStorage.getItem(storeKey)||'{}'))}catch{return {learned:{},attempts:[],pastAttempts:[],exam:null}}}
