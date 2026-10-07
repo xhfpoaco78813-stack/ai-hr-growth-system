@@ -12,3 +12,30 @@ async function boot(){if(!token)return login();try{me=(await api('session')).use
 setInterval(async()=>{if(!token)return;try{const r=await api('session');if(contentRevision&&r.revision!==contentRevision&&ENTRY==='user'){document.getElementById('syncStatus').innerHTML='课程已更新 <button class="btn" onclick="location.reload()">重新载入</button>';if(window.hrBridge)window.hrBridge.stop();document.querySelector('.app').hidden=true}}catch(e){if(token)document.getElementById('syncStatus').textContent='连接中断，请检查网络'}},4000);
 function downloadFile(name,value,type='application/json'){const a=document.createElement('a'),u=URL.createObjectURL(new Blob([value],{type}));a.href=u;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)}
 
+// A disclosure menu keeps every destination discoverable on narrow screens.
+(function responsiveNavigation(){
+ const sidebar=document.querySelector('.sidebar'),nav=document.getElementById('nav');
+ if(!sidebar||!nav)return;
+ nav.setAttribute('aria-label','主要功能');
+ const button=document.createElement('button');
+ button.type='button';button.className='mobile-nav-toggle';
+ button.setAttribute('aria-controls','nav');button.setAttribute('aria-expanded','false');
+ button.textContent='☰ 功能';
+ sidebar.querySelector('.side-brand').append(button);
+ const narrow=matchMedia('(max-width:820px)');
+ function setOpen(open,restoreFocus=false){
+  sidebar.classList.toggle('nav-expanded',open);
+  button.setAttribute('aria-expanded',String(open));
+  button.textContent=open?'✕ 收起':'☰ 功能';
+  if(restoreFocus)button.focus();
+ }
+ button.addEventListener('click',()=>setOpen(button.getAttribute('aria-expanded')!=='true'));
+ nav.addEventListener('click',e=>{
+  const target=e.target.closest('button[data-page]');if(!target)return;
+  nav.querySelectorAll('button').forEach(b=>b.removeAttribute('aria-current'));
+  target.setAttribute('aria-current','page');
+  if(narrow.matches){setOpen(false,true);window.scrollTo({top:0,behavior:'instant'})}
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sidebar.classList.contains('nav-expanded'))setOpen(false,true)});
+ narrow.addEventListener('change',()=>setOpen(false));
+})();
