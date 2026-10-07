@@ -88,6 +88,80 @@
     @media(min-width:821px){.sidebar{top:58px}}
     @media(max-width:820px){body{overflow-x:hidden}#onlineBar{position:relative;padding:8px;font-size:14px}.side-nav button,.option,.lesson-actions .btn{min-height:44px}.lesson-actions{position:sticky;bottom:0;background:#fff;padding:12px 0;z-index:8}.small,.card p,.explain{font-size:14px}}
     @media(max-width:420px){#syncStatus{width:100%;margin:0}.workspace-head h1{font-size:23px}.qtop{align-items:flex-start;gap:10px}.quiz-actions{align-items:stretch}.quiz-actions>.row{flex-wrap:wrap;justify-content:flex-end}.lesson-actions{flex-wrap:wrap}.lesson-actions .small{width:100%;text-align:center;order:-1}}
+
+/* Responsive HR interface — 2026-10-07. Preserve desktop layout and account data. */
+html{scroll-padding-top:100px}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #bf8700;outline-offset:3px}
+input,select,textarea{max-width:100%;font-size:16px}
+img,svg,canvas{max-width:100%}
+.card,.page,.workspace,.quiz-shell>* ,.coach-layout>*,.feedback-layout>*,.row>*{min-width:0}
+.card,.qtext,.option,.feedback-message,.feedback-text{overflow-wrap:anywhere}
+#onlineGate{height:100dvh;min-height:0;overflow-y:auto;overscroll-behavior:contain;align-items:start}
+#onlineGate>.card{margin:24px auto}
+.login-shell{min-height:100dvh}
+.sidebar{overflow-y:auto}
+.mobile-nav-toggle{display:none}
+.source-table{max-width:100%}
+@media(max-width:1100px){.feedback-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:900px){
+ .login-story{min-height:0;padding:24px 24px 36px;clip-path:none}
+ .login-story-inner{transform:none}.login-mark{width:44px;height:44px;border-radius:13px;font-size:17px}
+ .login-kicker{margin-top:14px;font-size:11px;letter-spacing:.1em}
+ .login-story h1{font-size:clamp(26px,6vw,38px);line-height:1.25;margin:10px 0}
+ .login-story p{font-size:15px;line-height:1.6}.login-points{display:none}
+ .login-panel{margin:0;padding:18px 16px max(24px,env(safe-area-inset-bottom));align-items:flex-start}
+ .login-card{padding:24px;width:min(460px,100%);min-height:0}
+ .login-card h2{font-size:24px;margin-top:12px}.login-card>p{margin-bottom:18px}
+ #onlineGate label,#loginError{font-size:14px}
+}
+@media(max-width:820px){
+ body{overflow-x:visible}
+ #onlineBar{position:relative;min-height:52px;padding:8px 12px;gap:6px;font-size:14px;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap}
+ #onlineBar .btn{min-height:44px;margin:0;padding:8px 10px;font-size:14px}
+ #syncStatus:not(:empty){flex-basis:100%;font-size:14px}
+ .sidebar{position:sticky;top:0;width:100%;padding:10px 14px;overflow:visible;z-index:30;box-shadow:0 3px 12px #111b3022}
+ .side-brand{padding:0;border:0;gap:8px;min-height:44px}
+ .side-brand b{font-size:14px}.side-brand small{display:none}.side-brand .mark{width:36px;height:36px;flex-shrink:0}
+ .mobile-nav-toggle{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;margin-left:auto;padding:8px 12px;flex-shrink:0;border:1px solid #7785a5;border-radius:10px;color:#fff;background:#23314f;font:inherit;font-size:14px}
+ .sidebar .side-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:10px;gap:6px;max-height:65dvh;overflow-y:auto}
+ .sidebar .side-nav button{white-space:normal;font-size:14px;min-height:48px;padding:10px 8px}
+ .sidebar:not(.nav-expanded) .side-nav{display:none}
+ main.workspace{margin-left:0;padding:18px 14px max(32px,env(safe-area-inset-bottom))}
+ .workspace-head,.section-head,.dash-title,.lesson-top,.feedback-meta{flex-wrap:wrap}
+ .workspace-head h1{font-size:24px}.section-head h2{font-size:22px}
+ .row{flex-wrap:wrap}.option{font-size:16px;line-height:1.65;min-height:48px}
+ .btn,.control,.atom button{min-height:44px}.btn{font-size:15px}
+ .control,.search{min-width:0;width:100%}.toolbar{align-items:stretch}
+ .small,.card p,.explain,.callout,.tag,.source-table th,.source-table td,.module-foot .row{font-size:14px;line-height:1.65}
+ .onboarding .goal-grid,.feedback-layout,.past-hero,.coach-layout{grid-template-columns:minmax(0,1fr)}
+ .past-hero{padding:22px}.past-hero>.icon{display:none}.past-hero h1{font-size:26px}
+ .past-report,.concept-map{grid-template-columns:minmax(0,1fr)}
+ .memory-card{min-height:0;padding:24px 16px}.memory-card h2{font-size:24px}
+ .rule-box{padding:16px}.rule-box p{font-size:17px}
+ .lesson-actions{position:static;padding:12px 0;flex-wrap:wrap;gap:8px}
+ .lesson-actions .btn{flex:1 1 120px}.lesson-actions .small{flex-basis:100%;text-align:center}
+ .quiz-actions{flex-wrap:wrap}.quiz-actions>.row{flex-wrap:wrap}
+ .quiz-actions .btn{flex:1 1 auto}.quiz-card{min-height:0}
+ .palette{grid-template-columns:repeat(auto-fit,minmax(44px,1fr))}.dot{min-height:44px;font-size:14px}
+ .source-table{display:block;overflow-x:auto}
+ .resume-exam,.goal-banner{flex-wrap:wrap}.resume-copy,.goal-copy{min-width:180px}
+ .modal{padding:12px}.modalbox{max-height:calc(100dvh - 24px);padding:20px 16px;width:100%;overscroll-behavior:contain}
+ .toast{left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));max-width:100%;z-index:110}
+ #adminContent{margin:0 auto;padding:16px 12px}#adminContent .card{padding:16px}
+ #adminContent .row{display:block}#adminContent .gate{grid-template-columns:1fr}
+ #adminContent .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #adminContent .tabs .btn{margin:0;font-size:14px}
+ #adminContent .scroll{max-width:100%;overflow:auto}
+ #adminContent table{min-width:650px}
+}
+@media(max-width:380px){
+ .login-card{padding:20px 16px}.side-brand b{max-width:145px}.side-brand .mark{display:none}
+ .barrow{grid-template-columns:90px minmax(0,1fr) 34px;gap:6px}
+ .dash-metrics,.mother-grid,.learn-dashboard,.paper-grid{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+
   </style>
 </head>
 <body>
@@ -602,4 +676,3 @@
 <script src="shared.js"></script><script src="client.js"></script>
 </body>
 </html>
-
