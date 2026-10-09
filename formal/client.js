@@ -1,7 +1,9 @@
 let pending=null,inflight=null,saveTimer=null,retryDelay=1000,learningQueue=[];
 function status(s){const e=document.getElementById('syncStatus');if(e)e.textContent=s}
 function schedule(delay=500){clearTimeout(saveTimer);saveTimer=setTimeout(()=>flushProgress().catch(()=>{}),delay)}
-window.hrSync=function(state){if(!token)return;pending={owner:token,state:JSON.stringify(state),revision:contentRevision};schedule()};
+function feynmanLocalKey(){return me&&me.id?'hr_feynman_'+me.id:null}
+function localFeynman(){try{const key=feynmanLocalKey();return key?JSON.parse(localStorage.getItem(key)||'{}'):{} }catch{return {}}}
+window.hrSync=function(state){if(!token)return;try{const key=feynmanLocalKey();if(key)localStorage.setItem(key,JSON.stringify({feynman:state.feynman||{},lessonDraft:state.lessonDraft||null}))}catch{}pending={owner:token,state:JSON.stringify(state),revision:contentRevision};schedule()};
 window.flushProgress=async function(){
  if(inflight){await inflight;if(pending)return flushProgress();return}
  if(!pending||!token)return;
@@ -10,7 +12,7 @@ window.flushProgress=async function(){
  try{await inflight}finally{inflight=null}
  if(pending)return flushProgress();
 };
-async function openApp(){pending=null;clearTimeout(saveTimer);const owner=token;const [c,s,e,p]=await Promise.all([api('content'),api('progress'),api('exam'),api('profile')]);if(owner!==token)return;contentRevision=c.revision;window.hrBridge.load(c.content,s,e.exam,p.profile);bar();document.querySelector('.app').hidden=false;window.hrBridge.home()}
+async function openApp(){pending=null;clearTimeout(saveTimer);const owner=token;const [c,s,e,p]=await Promise.all([api('content'),api('progress'),api('exam'),api('profile')]);if(owner!==token)return;contentRevision=c.revision;const serverSupportsFeynman=Object.prototype.hasOwnProperty.call(s,'feynman'),local=localFeynman();s.feynman=s.feynman||{};for(const [id,note] of Object.entries(local.feynman||{})){if(!s.feynman[id]||Number(note.updatedAt)>Number(s.feynman[id].updatedAt))s.feynman[id]=note}if(!serverSupportsFeynman&&!s.lessonDraft&&local.lessonDraft)s.lessonDraft=local.lessonDraft;window.hrBridge.load(c.content,s,e.exam,p.profile);bar();document.querySelector('.app').hidden=false;window.hrBridge.home()}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)flushProgress().catch(()=>{})});window.addEventListener('beforeunload',e=>{if(pending||inflight){e.preventDefault();e.returnValue='学习记录仍在保存'}});
 async function flushLearning(){const queue=learningQueue.slice();learningQueue=[];for(const payload of queue)try{await api('learning','POST',payload)}catch{learningQueue.push(payload)}if(learningQueue.length)throw Error('仍有作答记录尚未保存')}
 window.flushLearning=flushLearning;
@@ -22,4 +24,3 @@ window.hrSaveProfile=data=>api('profile','PUT',data).then(x=>x.profile);
 window.hrRecord=(q,pick)=>{const payload={action:'answer',eventId:q.id+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,8),questionId:q.id,pick};const send=n=>api('learning','POST',payload).then(x=>x.progress).catch(e=>n<3&&token?new Promise(resolve=>setTimeout(resolve,500*Math.pow(2,n))).then(()=>send(n+1)):(learningQueue.push(payload),Promise.reject(e)));return send(0)};
 window.hrCompleteLesson=lesson=>api('learning','POST',{action:'complete',sessionId:lesson.sessionId,results:lesson.results,title:lesson.title}).then(x=>x.progress);
 boot();
-
